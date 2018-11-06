@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" >
+<head th:fragment="header(title, links)">
+  <title th:replace="${title}">Static Header</title>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Cache-Control" content="no-cache"/>
+  <meta http-equiv="Expires" content="-1"/>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <link rel="icon" th:href="@{/img/favicon.png}" type="image/x-icon" />
+
+  <!--/* Default links; can be replaced by the calling templates */-->
+  <link href="../../static/plugin/bootstrap/3.3.7/css/bootstrap.css" rel="stylesheet" media="screen" th:href="@{/plugin/bootstrap/3.3.7/css/bootstrap.css}" />
+  <link href="../../static/plugin/bootstrap-table/1.11.1/css/bootstrap-table.css" rel="stylesheet" media="screen" th:href="@{/plugin/bootstrap-table/1.11.1/css/bootstrap-table.css}" />
+  <link href="../../static/plugin/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" media="screen" th:href="@{/plugin/font-awesome/4.7.0/css/font-awesome.min.css}" />
+  <link href="../../static/plugin/linearicons/style.css" rel="stylesheet" media="screen" th:href="@{/plugin/linearicons/style.css}" />
+  <link href="../../static/plugin/chartist/css/chartist-custom.css" rel="stylesheet" media="screen" th:href="@{/plugin/chartist/css/chartist-custom.css}" />
+  <link href="../../static/css/fonts-menu.css" rel="stylesheet" type="text/css" th:href="@{/css/fonts-menu.css}"/>
+  <!--/* Per-page placeholder for additional links */-->
+  <link href="../../static/plugin/bootstrapValidator/0.5.3/css/bootstrapValidator.css" rel="stylesheet" media="screen" th:href="@{/plugin/bootstrapValidator/0.5.3/css/bootstrapValidator.css}" />
+  <link href="../../static/css/common.css" rel="stylesheet" media="screen" th:href="@{/css/common.css}" />
+  <link href="../../static/css/main.css" rel="stylesheet" media="screen" th:href="@{/css/main.css}" />
+  <link href="../../static/plugin/sweetalert/sweetalert.min.css" rel="stylesheet" media="screen" th:href="@{/plugin/sweetalert/sweetalert.min.css}" />
+  <th:block th:replace="${links}" />
+</head>
+<body>
+<div id="wrapper">
+  <!-- NAVBAR -->
+  <nav th:fragment="navbar" class="definNav navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="brand">
+        <a href="#">
+          <img th:src="@{/img/logo_ch.png}" alt="CH Logo" />
+          <strong class="strong-logo" style="font-size: 20px; color: #00AAFF;background-color:#2B333E">阜阳浩华出入库系统</strong>
+        </a>
+      </div>
+      <div class="navbar-btn">
+        <button type="button" class="btn-toggle-fullwidth">
+          <i class="glyphicon glyphicon-menu-hamburger" style="font-weight:normal; color: #fff;"></i>
+        </button>
+      </div>
+      <!--           <div class="navbar-btn">
+                  <button type="button" class="btn-toggle-fullwidth">
+                    <i class="lnr lnr-arrow-left-circle" style="color: #2c9e74;"></i>
+                  </button>
+                </div> -->
+      <div id="navbar-menu">
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img th:if="${#strings.equals('', sex)}" th:src="@{/img/user.png}" class="img-circle" alt="Avatar" />
+              <img th:if="${#strings.equals('0', sex)}" th:src="@{/img/user0.png}" class="img-circle" alt="Avatar" />
+              <img th:if="${#strings.equals('1', sex)}" th:src="@{/img/user1.png}" class="img-circle" alt="Avatar" />
+              <span th:text="${userName}" style="color:#fff;">USER</span>
+            </a>
+          </li>
+          <li>
+            <a th:href="@{/logout}" style="color:#fff;"><i class="lnr lnr-exit" ></i> <span>退出</span></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div th:fragment="sidebar" id="sidebar-nav" class="sidebar defibar">
+    <div class="sidebar-scroll">
+      <nav>
+        <ul class="nav">
+          <li th:if="${rootMenu}" >
+            <a th:with="rootMenuCode=${rootMenu.resCode}" th:href="@{${rootMenu.resUri}}" th:class="${rootMenu.resUri} eq ${uri} ? 'active'">
+              <i class="lnr lnr-home"></i>
+              <span th:text="${rootMenu.resName}">首页</span>
+            </a>
+          </li>
+          <li th:each="firstMenu : ${menuMap[rootMenu.resCode]}" >
+            <a th:href="@{#} + ${firstMenu.resCode}" data-toggle="collapse"
+               th:class="${firstMenu.resUri} eq ${parentUri} ? 'collapse active' : 'collapse collapsed'"
+               th:aria-expanded="${firstMenu.resUri} eq ${parentUri}">
+              <i th:class="not ${firstMenu.resIcon} ? 'lnr lnr-file-empty' : ${firstMenu.resIcon}"></i>
+              <span th:text="${firstMenu.resName}">一级菜单</span>
+              <i class="icon-submenu lnr lnr-chevron-left"></i>
+            </a>
+            <div th:id="${firstMenu.resCode}" th:class="${firstMenu.resUri} eq ${parentUri} ? 'collapsed collapse in' : 'collapsed collapse'"
+                 th:aria-expanded="${firstMenu.resUri} eq ${parentUri}">
+              <ul class="nav" >
+                <li th:each="secondMenu : ${menuMap[firstMenu.resCode]}" class="sec">
+                  <a th:href="@{${secondMenu.resUri}}" th:class="${secondMenu.resUri} eq ${uri} ? 'active'">
+                    <i th:class="not ${secondMenu.resIcon} ? 'lnr lnr-file-empty' : ${secondMenu.resIcon}"></i>
+                    <span th:text="${secondMenu.resName}">二级菜单</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+  <!--/*  Multiple footer fragments defined */-->
+  <div th:fragment="footer" th:align="center" style="margin-bottom:20px">
+    <span style="line-height:4px">阜阳市浩华电力设备有限公司专用<br /> </span>
+    <span >&copy; </span>
+    <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
+    <span >Fu Yang Hao Hua(WangWei) - all right reserved</span>
+  </div>
+  <div th:fragment="footer-admin" th:align="center">
+    <span>&copy; </span>
+    <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2017</span>
+    <span>Spring Airline(Research Lab.) - Application - </span>
+    <span th:text="${@environment.getProperty('application.version')}">V0.1</span>
+  </div>
+
+  <div th:fragment="mask" id="mask" class="mask"></div>
+  <div th:fragment="scripts(scripts)">
+    <!--/* Default scripts; can be replaced by the calling templates */-->
+    <script src="../../static/plugin/jquery/jquery-2.1.1.min.js" th:src="@{/plugin/jquery/jquery-2.1.1.min.js}"></script>
+    <script src="../../static/plugin/bootstrap/3.3.7/js/bootstrap.min.js" th:src="@{/plugin/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+    <script src="../../static/plugin/bootstrap-table/1.11.1/js/bootstrap-table.js" th:src="@{/plugin/bootstrap-table/1.11.1/js/bootstrap-table.js}"></script>
+    <script src="../../static/plugin/bootstrap-table/1.11.1/js/locale/bootstrap-table-zh-CN.min.js" th:src="@{/plugin/bootstrap-table/1.11.1/js/locale/bootstrap-table-zh-CN.min.js}"></script>
+    <script src="../../static/plugin/bootstrapValidator/0.5.3/js/bootstrapValidator.js" th:src="@{/plugin/bootstrapValidator/0.5.3/js/bootstrapValidator.js}"></script>
+    <script src="../../static/plugin/jquery-slimscroll/jquery.slimscroll.min.js" th:src="@{/plugin/jquery-slimscroll/jquery.slimscroll.min.js}"></script>
+    <script src="../../static/plugin/jquery.easy-pie-chart/jquery.easypiechart.min.js" th:src="@{/plugin/jquery.easy-pie-chart/jquery.easypiechart.min.js}"></script>
+    <script src="../../static/plugin/chartist/js/chartist.min.js" th:src="@{/plugin/chartist/js/chartist.min.js}"></script>
+    <script  src="../../static/plugin/bootstrapValidator/0.5.3/js/language/zh_CN.js" th:src="@{/plugin/bootstrapValidator/0.5.3/js/language/zh_CN.js}"></script>
+    <script src="../../static/js/jquery.qqFace.js" th:src="@{/js/jquery.qqFace.js}"></script>
+    <script src="../../static/plugin/sweetalert/sweetalert.min.js" th:src="@{/plugin/sweetalert/sweetalert.min.js}"></script>
+    <script src="../../static/js/common.js" th:src="@{/js/common.js}"></script>
+    <!--/* Per-page placeholder for additional scripts */-->
+    <th:block th:replace="${scripts}" />
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hh.improve.dao.PayRollDao" >
+  <resultMap id="BaseResultMap" type="com.hh.improve.entity.PayRoll" >
+    <result column="payroll_Id" property="payrollId" jdbcType="VARCHAR" />
+    <result column="employee_Phone" property="employeePhone" jdbcType="VARCHAR" />
+    <result column="salary" property="salary" jdbcType="DECIMAL" />
+    <result column="salary_paid" property="salaryPaid" jdbcType="DECIMAL" />
+    <result column="salary_Date" property="salaryDate" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    P.payroll_Id, P.employee_Phone, P.salary, P.salary_paid, P.salary_Date, P.remark,
+    P.creater, P.created_time, P.modifier, P.modified_time
+  </sql>
+
+  <select id="getPayRollVoPageList" resultType="com.hh.improve.entity.vo.PayRollVo">
+        SELECT P.payroll_Id AS payrollId, P.employee_Phone AS employeePhone, P.salary, P.salary_paid AS salaryPaid,
+               P.salary_Date AS salaryDate, P.remark, (P.salary_paid - P.salary) AS balance,  E.employee_Name AS employeeName, E.status AS status,
+               P.creater, P.created_time AS createdTime, P.modifier, P.modified_time AS modifiedTime
+        FROM hh_payroll P
+        LEFT JOIN hh_employee E ON (E.employee_Phone = P.employee_Phone)
+        <where>
+            <if test="employeePhone != null and employeePhone !=''">
+                AND P.employee_Phone like "%"#{employeePhone}"%"
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                AND E.employee_Name like "%"#{employeeName}"%"
+            </if>
+            <if test="salaryDate!= null and salaryDate != ''">
+                AND  P.salary_Date = #{salaryDate, jdbcType = VARCHAR}
+            </if>
+        </where>
+        ORDER BY E.status DESC, P.employee_Phone DESC, P.modified_time DESC
+  </select>
+
+  <select id="queryHistoryPayRollVoPage" resultType="com.hh.improve.entity.vo.PayRollVo">
+        SELECT P.payroll_Id AS payrollId, P.employee_Phone AS employeePhone, P.salary, P.salary_paid AS salaryPaid,
+               P.salary_Date AS salaryDate, P.remark, (P.salary_paid - P.salary) AS balance, E.employee_Name AS employeeName,
+               E.status AS status, P.creater, P.created_time AS createdTime, P.modifier, P.modified_time AS modifiedTime
+        FROM hh_payroll P
+        LEFT JOIN hh_employee E ON (E.employee_Phone = P.employee_Phone)
+        <where>
+            <if test="employeePhone != null and employeePhone !=''">
+                AND P.employee_Phone = #{employeePhone}
+            </if>
+        </where>
+        ORDER BY P.salary_Date DESC, P.modified_time DESC
+  </select>
+    <select id="queryByCondition" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM hh_payroll P
+        <where>
+            <if test="payrollId!= null and payrollId != ''">
+                AND  P.payroll_Id = #{payrollId, jdbcType = VARCHAR}
+            </if>
+            <if test="employeePhone!= null and employeePhone != ''">
+                AND  P.employee_Phone = #{employeePhone, jdbcType = VARCHAR}
+            </if>
+            <if test="salaryDate!= null and salaryDate != ''">
+                AND  P.salary_Date = #{salaryDate, jdbcType = VARCHAR}
+            </if>
+        </where>
+        ORDER BY  P.employee_Phone DESC, P.modified_time DESC
+    </select>
+    <insert id="insert" parameterType="com.hh.improve.entity.PayRoll">
+        INSERT INTO hh_payroll (
+        payroll_Id,
+        employee_Phone,
+        salary,
+        salary_paid,
+        salary_Date,
+        remark,
+        creater,
+        modifier,
+        created_time,
+        modified_time)
+        VALUES (
+        #{payrollId,jdbcType=VARCHAR},
+        #{employeePhone,jdbcType=VARCHAR},
+        #{salary,jdbcType=DECIMAL},
+        #{salaryPaid,jdbcType=DECIMAL},
+        #{salaryDate,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{creater,jdbcType=VARCHAR},
+        #{modifier,jdbcType=VARCHAR},
+        sysdate(),
+        sysdate())
+    </insert>
+
+    <update id="update" parameterType="com.hh.improve.entity.PayRoll">
+        UPDATE hh_payroll
+        <set >
+            <if test="salaryPaid != null and salaryPaid != ''">
+                salary_paid = #{salaryPaid, jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark, jdbcType=VARCHAR},
+            </if>
+            <if test="modifier != null and modifier != ''">
+                modifier = #{modifier, jdbcType = VARCHAR},
+            </if>
+            MODIFIED_TIME = sysdate()
+        </set>
+        <where >
+            payroll_Id = #{payrollId, jdbcType=VARCHAR}
+        </where>
+    </update>
+</mapper>

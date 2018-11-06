@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hh.improve.dao.IVoucherSonDao" >
+  <resultMap id="BaseResultMap" type="com.hh.improve.entity.VoucherSon" >
+    <result column="voucher_Id" property="voucherId" jdbcType="VARCHAR" />
+    <result column="goods_Id" property="goodsId" jdbcType="INTEGER" />
+    <result column="goods_Name" property="goodsName" jdbcType="VARCHAR" />
+    <result column="goods_format" property="goodsFormat" jdbcType="VARCHAR" />
+    <result column="goods_Unit" property="goodsUnit" jdbcType="VARCHAR" />
+    <result column="goods_Number" property="goodsNumber" jdbcType="INTEGER" />
+    <result column="unit_Price" property="unitPrice" jdbcType="DECIMAL" />
+    <result column="total_Price" property="totalPrice" jdbcType="DECIMAL" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    VS.voucher_Id, VS.goods_Id, VS.goods_Name, VS.goods_format, VS.goods_Unit,  VS.goods_Number, VS.unit_Price,
+    VS.total_Price, VS.remark,VS.creater, VS.created_time, VS.modifier, VS.modified_time
+  </sql>
+
+  <select id="queryByCondition" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM hh_voucherSon VS
+    <where>
+      <if test="voucherId != null and voucherId !=''">
+        AND VS.voucher_Id = #{voucherId, jdbcType = VARCHAR}
+      </if>
+      <if test="goodsName != null and goodsName !=''">
+        AND VS.goods_Name like "%"#{goodsName}"%"
+      </if>
+    </where>
+    ORDER BY VS.goods_Id ASC, VS.modified_time DESC, VS.created_time DESC
+  </select>
+
+  <insert id="batchInsert" parameterType="java.util.List" >
+    INSERT INTO hh_voucherSon
+    (
+        voucher_Id,
+        goods_Id,
+        goods_Name,
+        goods_format,
+        goods_Unit,
+        goods_Number,
+        unit_Price,
+        total_Price,
+        remark,
+        creater,
+        created_time)
+    VALUES
+    <foreach collection ="list" item="good" index= "index" separator =",">
+      (
+        #{good.voucherId},
+        #{good.goodsId},
+        #{good.goodsName},
+        #{good.goodsFormat},
+        #{good.goodsUnit},
+        #{good.goodsNumber},
+        #{good.unitPrice},
+        #{good.totalPrice},
+        #{good.remark},
+        #{good.creater},
+        sysdate())
+    </foreach>
+  </insert>
+
+  <delete id="deleteByVoucherId" parameterType="java.lang.String">
+    delete FROM  hh_voucherSon
+    <where >
+      voucher_Id = #{voucherId, jdbcType=VARCHAR}
+    </where>
+  </delete>
+</mapper>

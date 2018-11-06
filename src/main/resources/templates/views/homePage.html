@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorator="layouts/layout-home">
+<head>
+  <title>Home</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+</head>
+<body>
+<div layout:fragment="content" style="overflow:hidden">
+
+	<div class="row" style="width:100%; padding:10px 0px; margin:0px; ">
+		<div class="row-3" >
+			<div class="btn btn-default btn-lg authManager" >
+				<span class="glyphicon glyphicon-signal" > 凭证录入</span>
+			</div>
+			<div class="btn btn-default btn-lg baseInfo" >
+				<span class="glyphicon glyphicon-tasks" > 凭证查询</span>
+			</div>x
+			<!--<div class="btn btn-default btn-lg projManager" >
+				<span class="glyphicon glyphicon-folder-close" > 项目信息</span>
+			</div>
+			<div class="btn btn-default btn-lg moniManager" >
+				<span class="glyphicon glyphicon-stats" > 数据实体项</span>
+			</div>-->
+		</div>
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-body" >
+			<h3 class="fast-link">快速链接</h3>
+			<table id="tb-onlineInterfacelist" ></table>
+		</div>
+	</div>
+	<div class="row" style="padding:20px 50px; border:0.8px solid #ddd; margin:20px 5px; background-color:white; border-radius:4px">
+		<table class="table" style="border:0.8px solid #ddd;  margin-top:20px;">
+			<tbody class="table-info">
+			<tr>
+				<th style="font-size:20px; text-indent:10px;" colspan="2">系统信息</th>
+			</tr>
+			<tr class="tab-info">
+				<th >程序版本</th>
+				<td >V1.0</td>
+			</tr>
+			<tr class="tab-info">
+				<th >发布时间</th>
+				<td >2018年08月20日</td>
+			</tr>
+			<tr class="tab-info">
+				<th >联系我们</th>
+				<td >18222255408</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</body>

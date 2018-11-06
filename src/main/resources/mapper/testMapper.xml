@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hh.improve.dao.TestDao" >
+ 	<resultMap id="BaseResultMap" type="com.hh.improve.entity.TestBean" >
+		<result column="operatorId" property="operatorId" jdbcType="VARCHAR" />
+		<result column="operatorName" property="operatorName" jdbcType="VARCHAR" />
+		<result column="operatorMobile" property="operatorMobile" jdbcType="VARCHAR" />
+		<result column="operatorPwd" property="operatorPwd" jdbcType="VARCHAR" />
+		<result column="operatorMsg" property="operatorMsg" jdbcType="VARCHAR" />
+  </resultMap>
+  <!-- 返回的字段 -->
+  <sql id="Base_Column_List" >
+    A.operatorId ,A.operatorName ,A.operatorMobile ,A.operatorPwd,A.operatorMsg
+  </sql>
+ 
+  <select id="queryByCondition" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM aa_operator A
+  </select>
+</mapper>

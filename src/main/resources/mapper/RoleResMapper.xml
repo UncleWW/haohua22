@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hh.improve.dao.RoleResourceDao" >
+  <resultMap id="BaseResultMap" type="com.hh.improve.entity.RoleResource" >
+  	<result column="RES_CODE" property="resCode" jdbcType="VARCHAR" />
+	<result column="ROLE_CODE" property="roleCode" jdbcType="VARCHAR" />
+	<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+	<result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+	<result column="MODIFIED_TIME" property="modifiedTime" jdbcType="TIMESTAMP" />
+	<result column="CREATER" property="creater" jdbcType="VARCHAR" />
+	<result column="MODIFIER" property="modifier" jdbcType="VARCHAR" />
+	<result column="STATUS" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- 返回字段 -->
+  <sql id="Base_Column_List" >
+		A.RES_CODE ,A.ROLE_CODE ,A.CREATED_TIME ,A.MODIFIED_TIME ,A.CREATER ,A.MODIFIER ,A.STATUS 
+  </sql> 
+ 
+  <select id="query" resultMap="BaseResultMap" >
+    SELECT <include refid="Base_Column_List" />
+    FROM hh_res_role A
+    <where> 1 = 1
+    	<if test="roleCode != null and roleCode != ''">
+            AND A.ROLE_CODE = #{roleCode, jdbcType=VARCHAR}
+        </if>
+        <if test="resCode != null and resCode != ''">
+            AND A.RES_CODE = #{resCode, jdbcType=VARCHAR}
+        </if>
+		 <if test="status != null" >
+		    	AND A.STATUS = #{status, jdbcType=VARCHAR}
+		 </if>
+		 <if test="creater != null and creater !=''" >
+		    ND A.CREATER = #{creater, jdbcType=VARCHAR} 
+		 </if>
+		 <if test="modifier != null and modifier !=''" >
+		    AND A.MODIFIER = #{modifier, jdbcType=VARCHAR} 
+		 </if>
+    </where>
+  </select>
+  
+   <select id="queryByCondition" resultMap="BaseResultMap" >
+    SELECT <include refid="Base_Column_List"/>
+	FROM hh_res_role A
+	<where> 1 = 1
+		<if test="roleCode != null and roleCode != ''">
+			AND A.ROLE_CODE = #{roleCode, jdbcType=VARCHAR} 
+		</if>
+		<if test="status != null" >
+		    AND A.STATUS = #{status, jdbcType=VARCHAR}
+		 </if>
+    </where>
+  </select>
+  
+  <select id="queryParentRoleResByRoleCode" resultMap="BaseResultMap" >
+    SELECT <include refid="Base_Column_List"/>
+	FROM hh_res_role A LEFT JOIN hh_role R ON A.ROLE_CODE = R.PARENT_ROLE_CODE
+	WHERE R.ROLE_CODE = #{roleCode, jdbcType=VARCHAR} AND A.STATUS = '1'
+  </select>
+<!--   根据roleCode查询其所有后代节点所拥有的资源 Oracle写法-->
+<!--  <select id="queryChildrenRoleResByRoleCode" resultMap="BaseResultMap" >
+    SELECT <include refid="Base_Column_List"/>
+	FROM hh_res_role A
+	WHERE
+		A.ROLE_CODE IN (
+		SELECT R.ROLE_CODE from hh_role R
+		START WITH R.ROLE_CODE = #{roleCode, jdbcType=VARCHAR}
+		CONNECT BY PRIOR R.ROLE_CODE = R.PARENT_ROLE_CODE)
+		AND A.ROLE_CODE != #{roleCode, jdbcType=VARCHAR}
+		AND A.STATUS = '1'
+  </select>-->
+	<!--   根据roleCode查询其所有后代节点所拥有的资源 Oracle写法-->
+	<select id="queryChildrenRoleResByRoleCode" resultMap="BaseResultMap" >
+		SELECT <include refid="Base_Column_List"/>
+		FROM hh_res_role A
+		WHERE
+		A.ROLE_CODE IN (
+			SELECT * FROM (
+					select R.ROLE_CODE from hh_role R
+					where FIND_IN_SET(ROLE_CODE, getRoleChildLst(#{roleCode}))
+				) TMP
+		)
+		AND A.ROLE_CODE != #{roleCode, jdbcType=VARCHAR}
+		AND A.STATUS = '1'
+	</select>
+ 
+  <insert id="insert" parameterType="com.hh.improve.entity.RoleResource">
+    INSERT INTO hh_res_role
+	  (RES_CODE ,
+	  ROLE_CODE ,
+	  CREATED_TIME ,
+	  CREATER ,
+	  STATUS 
+	  )
+	VALUES
+	  (#{resCode,jdbcType=VARCHAR},
+	   #{roleCode,jdbcType=VARCHAR},
+	   sysdate(),
+	   #{creater,jdbcType=VARCHAR},
+	   #{status, jdbcType=VARCHAR}
+	   )
+  </insert>
+  
+  <update id="update" parameterType="com.hh.improve.entity.RoleResource">
+    UPDATE hh_res_role
+    <set >
+        <if test="roleCode != null and roleCode != ''">
+            ROLE_CODE = #{roleCode, jdbcType=VARCHAR},
+        </if>
+        <if test="resCode != null and resCode != ''">
+            RES_CODE = #{resCode, jdbcType=VARCHAR},
+        </if>
+		<if test="status != null" >
+		    STATUS = #{status, jdbcType=VARCHAR}  ,
+		</if>
+        MODIFIER = #{modifier, jdbcType=VARCHAR},
+        MODIFIED_TIME = sysdate()
+    </set>
+    <where >
+		 RES_CODE = #{resCode, jdbcType=VARCHAR}
+		 AND ROLE_CODE = #{roleCode, jdbcType=VARCHAR}
+    </where> 
+  </update>
+</mapper>

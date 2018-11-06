@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hh.improve.dao.IVoucherDao" >
+  <resultMap id="BaseResultMap" type="com.hh.improve.entity.Voucher" >
+    <result column="voucher_Id" property="voucherId" jdbcType="VARCHAR" />
+    <result column="customer_Id" property="customerId" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="pay_Amount" property="payAmount" jdbcType="DECIMAL" />
+    <result column="debt_Amount" property="debtAmount" jdbcType="DECIMAL" />
+    <result column="voucher_Date" property="voucherDate" jdbcType="VARCHAR" />
+    <result column="voucher_Maker" property="voucherMaker" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    V.voucher_Id, V.customer_Id, V.amount, V.pay_Amount, V.debt_Amount,  V.voucher_Date, V.voucher_Maker,
+    V.remark, V.creater, V.created_time, V.modifier, V.modified_time
+  </sql>
+
+    <select id="getMaxVoucherId" resultType="java.lang.String">
+        SELECT max(voucher_Id)
+        FROM hh_voucher
+    </select>
+
+  <select id="queryByCondition" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM hh_voucher V
+    <where>
+      <if test="voucherId != null and voucherId !=''">
+        AND V.voucher_Id = #{voucherId, jdbcType = VARCHAR}
+      </if>
+      <if test="customerId != null and customerId !=''">
+        AND V.customer_Id = #{customerId, jdbcType = VARCHAR}
+      </if>
+      <if test="voucherDate != null and voucherDate != ''">
+        AND V.voucher_Date = #{voucherDate, jdbcType = VARCHAR}
+      </if>
+    </where>
+  </select>
+
+
+
+  <insert id="insert" parameterType="com.hh.improve.entity.Voucher">
+    INSERT INTO hh_voucher
+    (
+    voucher_Id,
+    customer_Id,
+    amount,
+    pay_Amount,
+    debt_Amount,
+    voucher_Date,
+    voucher_Maker,
+    remark,
+    creater,
+    created_time)
+    VALUES(
+    #{voucherId,jdbcType=VARCHAR},
+    #{customerId,jdbcType=VARCHAR},
+    #{amount,jdbcType=DECIMAL},
+    #{payAmount,jdbcType=DECIMAL},
+    #{debtAmount,jdbcType=DECIMAL},
+    #{voucherDate,jdbcType=VARCHAR},
+    #{voucherMaker,jdbcType=VARCHAR},
+    #{remark,jdbcType=VARCHAR},
+    #{creater,jdbcType=VARCHAR},
+    sysdate())
+  </insert>
+
+  <update id="update" parameterType="com.hh.improve.entity.Voucher">
+    UPDATE hh_voucher
+    <set >
+      <if test="customerId != null and customerId !=''" >
+        customer_Id = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null and amount !=''" >
+        amount = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="payAmount != null and payAmount !=''" >
+        pay_Amount = #{payAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="debtAmount != null and debtAmount !=''" >
+        debt_Amount = #{debtAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="voucherDate != null and voucherDate !=''" >
+        voucher_Date = #{voucherDate,jdbcType=VARCHAR},
+      </if>
+      <if test="voucherMaker != null and voucherMaker !=''" >
+        voucher_Maker = #{voucherMaker,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null and remark !=''" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      MODIFIED_TIME = sysdate()
+    </set>
+    <where >
+      voucher_Id = #{voucherId, jdbcType=VARCHAR}
+    </where>
+  </update>
+
+  <select id="queryVoucherListPage" resultType="com.hh.improve.entity.vo.VoucherVo">
+    SELECT  V.customer_Id AS customerId,C.customer_Name AS customerName ,
+    SUM(V.amount) AS amount,SUM(V.pay_Amount) AS payAmount,
+    SUM(V.debt_Amount) AS debtAmount,COUNT(voucher_Id) AS voucherNnm
+    FROM hh_voucher V
+    LEFT JOIN hh_customer C ON V.customer_Id = C.customer_Id
+    <where>
+      <if test="customerName != null and customerName !=''">
+        AND C.customer_Name LIKE "%"#{customerName, jdbcType = VARCHAR}"%"
+      </if>
+      <if test="voucherDate_begin != null and voucherDate_begin !=''">
+        <![CDATA[ AND V.voucher_Date >= #{voucherDate_begin, jdbcType = TIMESTAMP} ]]>
+      </if>
+      <if test="voucherDate_end != null and voucherDate_end !=''">
+        <![CDATA[ AND V.voucher_Date <= #{voucherDate_end, jdbcType = TIMESTAMP} ]]>
+      </if>
+      <if test='debtIf == "0"'>
+         AND  V.debt_Amount = 0
+      </if>
+      <if test='debtIf == "1"'>
+       AND V.debt_Amount >= 0
+      </if>
+    </where>
+    GROUP BY V.customer_Id
+    ORDER BY  amount DESC ,debtAmount DESC
+  </select>
+
+  <select id="queryVoucherSonListPage" resultType="com.hh.improve.entity.vo.VoucherVo">
+    SELECT  V.voucher_Id AS voucherId, V.customer_Id AS customerId, V.amount AS amount,
+    V.pay_Amount AS payAmount, V.debt_Amount AS debtAmount,  V.voucher_Date AS voucherDate,
+    V.voucher_Maker AS voucherMaker, V.remark AS remark,V.creater AS creater, V.created_time AS createdTime,
+    V.modifier AS modifier, V.modified_time  AS modifiedTime,C.customer_Name AS customerName
+    FROM hh_voucher V
+    LEFT JOIN hh_customer C ON V.customer_Id = C.customer_Id
+    <where>
+      <if test="customerId != null and customerId !=''">
+        AND V.customer_Id = #{customerId, jdbcType = VARCHAR}
+      </if>
+      <if test="customerName != null and customerName !=''">
+        AND C.customer_Name LIKE "%"#{customerName, jdbcType = VARCHAR}"%"
+      </if>
+      <if test="voucherId != null and voucherId !=''">
+        AND V.voucher_Id = #{voucherId, jdbcType = VARCHAR}
+      </if>
+      <if test="voucherDate_begin != null and voucherDate_begin !=''">
+        <![CDATA[ AND V.voucher_Date >= #{voucherDate_begin, jdbcType = TIMESTAMP} ]]>
+      </if>
+      <if test="voucherDate_end != null and voucherDate_end !=''">
+        <![CDATA[AND V.voucher_Date <= #{voucherDate_end, jdbcType = TIMESTAMP}]]>
+      </if>
+      <if test='debtIf == "0"'>
+        AND  V.debt_Amount = 0
+      </if>
+      <if test='debtIf == "1"'>
+        AND V.debt_Amount >= 0
+      </if>
+    </where>
+    ORDER BY  V.voucher_Date DESC
+  </select>
+</mapper>

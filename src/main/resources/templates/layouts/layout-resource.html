@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" >
+<head th:replace="fragments/fragment-common :: header(~{this :: title}, ~{this :: .custom-link})">
+  <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Interface Manager - RuleManager</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <!-- Custom links for this page only -->
+  <link class="custom-link" href="../../static/plugin/ztree-v3/3.5.29/css/metroStyle/metroStyle.css" rel="stylesheet" media="screen" th:href="@{/plugin/ztree-v3/3.5.29/css/metroStyle/metroStyle.css}" />
+  <link class="custom-link" href="../../static/css/fonts-menu.css" rel="stylesheet" type="text/css" th:href="@{/css/fonts-menu.css}"/>
+  <link class="custom-link" href="../../static/plugin/select2/4.0.3/css/select2.min.css" rel="stylesheet" media="screen" th:href="@{/plugin/select2/4.0.3/css/select2.min.css}" />
+  <link class="custom-link" href="../../static/plugin/select2-bootstrap-css/1.4.6/css/select2-bootstrap.css" rel="stylesheet" media="screen" th:href="@{/plugin/select2-bootstrap-css/1.4.6/css/select2-bootstrap.css}" />
+  <link class="custom-link" href="../../static/css/override-select2.css" rel="stylesheet" media="screen" th:href="@{/css/override-select2.css}" />
+</head>
+<body>
+  <div id="wrapper">
+    <!-- NAVBAR -->
+    <div th:replace="fragments/fragment-common :: navbar"></div>
+    
+    <!-- LEFT SIDEBAR -->
+    <div th:replace="fragments/fragment-common :: sidebar"></div>
+    
+    <!-- MASK -->
+    <div th:replace="fragments/fragment-common :: mask"></div>
+    
+    <div class="main">
+      <!-- MAIN CONTENT -->
+      <div class="main-content">
+          <div layout:fragment="content"></div>
+      </div>
+    </div>
+    
+    <div class="clearfix"></div>
+    <div th:replace="fragments/fragment-common :: footer">&copy; 2017 The Static Footer In Layout</div>
+  </div>
+  <!-- script -->
+  <div th:replace="fragments/fragment-common :: scripts(~{this :: .custom-script})">
+    <script class="custom-script" src="../../static/js/resource.js" th:src="@{/js/resource.js}"></script>
+    <script class="custom-script" src="../../static/plugin/ztree-v3/3.5.29/js/jquery.ztree.all.min.js" th:src="@{/plugin/ztree-v3/3.5.29/js/jquery.ztree.all.min.js}"></script>
+    <script class="custom-script" src="../../static/plugin/select2/4.0.3/js/select2.full.min.js" th:src="@{/plugin/select2/4.0.3/js/select2.full.min.js}"></script>
+    <script class="custom-script" src="../../static/js/jquery.qqFace.js" th:src="@{/js/jquery.qqFace.js}"></script>
+ </div>
+</body>
+</html>

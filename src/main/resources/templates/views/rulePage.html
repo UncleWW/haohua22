@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorator="layouts/layout-rule">
+<head>
+  <title>HH-权限分配</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+</head>
+<body>
+  <div layout:fragment="content" style="">
+    <!-- 弹出框  开始         Role角色弹出框-->
+    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog"
+      data-backdrop="true" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+              aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">标题</h4>
+          </div>
+          <!-- 内容开始 -->
+          <div class="panel-body">
+
+            <table id="roleSelectCondition"></table>
+          </div>
+          <!-- 内容结束 -->
+          <div class="modal-footer">
+            <button type="button" id="btn1" class="btn btn-default"
+              data-dismiss="modal">关闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 弹出框  结束   Role-->
+    <!-- 弹出框  开始         Resource资源弹出框-->
+    <div class="modal fade" id="resModal" tabindex="-1" role="dialog"
+      data-backdrop="true" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"
+              aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">标题</h4>
+          </div>
+          <!-- 内容开始 -->
+          <div class="panel-body">
+            <table id="resSelectCondition"></table>
+          </div>
+          <!-- 内容结束 -->
+          <div class="modal-footer">
+            <button type="button" id="btn1" class="btn btn-default"
+              data-dismiss="modal">关闭</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 弹出框  结束  Resource -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="panel page-panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">角色列表</h3>
+            </div>
+            <div class="col-sm-12 form-group" >
+                 <div class="col-sm-6 ">
+               		<input type="text" placeholder="角色名称" class="form-control" id="roleIdExpand" autocomplete="off" />
+                 </div>
+                 <div class="col-sm-3 ">
+               		<button class="btn btn-primary form-control" style="float:right;margin-right:13px" onclick="roleIdExpand()">查询</button>
+                 </div>
+		    </div>
+            <div class="panel-body">
+	             <div class="form-group">
+             		  <div id="roleTree" class="ztree scrollDefineByWWNoBorder" style="margin-top: 30px;"></div>
+		         </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="panel page-panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">功能菜单列表</h3>
+            </div>
+            <div class="col-sm-12 form-group">
+           		<div class="col-sm-6 ">
+                	<input type="text" placeholder="资源名称" class="form-control" id="resIdExpand" autocomplete="off" />
+                </div>
+                <div class="col-sm-3">
+                	<button class="btn btn-primary form-control" onclick="resIdExpand()">查询</button>
+                </div>
+                <div class="col-sm-3">
+               		 <button class="btn btn-primary form-control" onclick="saveRule()">保存</button>
+                </div>
+              </div>
+            <div class="panel-body">
+               <div class="form-group">
+             	 <ul id="resTree" class="ztree scrollDefineByWWNoBorder"  style="margin-top: 30px;"></ul>
+          	  </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

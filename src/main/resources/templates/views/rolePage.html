@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorator="layouts/layout-role">
+<head>
+  <title>HH-角色管理</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+</head>
+<body>
+  <div layout:fragment="content" style="">
+    <!-- 弹出框  开始 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" data-backdrop="true" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="myModalLabel">标题</h4>
+          </div>
+          <!-- 内容开始 -->
+          <div class="modal-body">
+            <div class="panel-body">
+              <div class="form-group">
+                <form id="roleForm" onsubmit="return false" class="form-horizontal">
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-3">父角色名称：</label>
+                    <div class="col-sm-8">
+                      <input type="hidden" name="parentRoleCode"
+                        id="parentRoleCode" /> <input type="text"
+                        name="parentRoleName" id="parentRoleName"
+                        class="form-control" aria-disabled="false"
+                        disabled="disabled">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-3">角色编码：</label>
+                    <div class="col-sm-8 rowGroup">
+                      <input name="roleCode" class="form-control" id="roleCode"
+                        type="text">
+                    </div>
+                    <div class="col-sm-1">
+                      <strong>*</strong>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line ">
+                    <label class="control-label col-sm-3">角色名称：</label>
+                    <div class="col-sm-8 rowGroup">
+                      <input name="roleName" id="roleName" type="text"
+                        class="form-control">
+                    </div>
+                    <div class="col-sm-1">
+                      <strong>*</strong>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-3">排序编号：</label>
+                    <div class="col-sm-8 rowGroup">
+                      <input name="roleOrder" id="roleOrder" type="text"
+                        class="form-control">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-3">状态：</label>
+                    <div class="col-sm-8">
+                      <select name="status" id="status" class="form-control">
+                        <option value="1" >有效</option>
+                        <option value="0" >无效</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-1">
+                      <strong>*</strong>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-3">角色等级：</label>
+                    <div class="col-sm-8">
+                      <select name="roleType" id="roleType" class="form-control">
+                        <option value="1" >管理员</option>
+                        <option value="2" >用户</option>
+                      </select>
+                    </div>
+                    <div class="col-sm-1">
+                      <strong>*</strong>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-3">备注：</label>
+                    <div class="col-sm-8 rowGroup">
+                      <input name="remark" id="remark" type="text"
+                        class="form-control">
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!-- 内容结束 -->
+          <div class="modal-footer">
+            <button type="button" id="btn1" class="btn btn-default"
+              data-dismiss="modal">取消</button>
+            <button type="button" id="btn2" class="btn btn-primary">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 弹出框  结束 -->
+    <!-- 右侧  结束 -->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="panel page-panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">角色管理</h3>
+            </div>
+            <div class="panel-body">
+               <div class="form-group">
+	              <div id="buttonStyle" class="col-sm-12 form-group" style="margin-top: -20px;margin-left: -15px;">
+		              	 <div class="col-sm-4 resourceButtonDivStyle" >
+			                	<button type="button" class="btn btn-primary form-control" data-toggle="modal" data-target="#myModal" data-whatever="add">新增</button>
+			             </div>
+					     <div class="col-sm-4 resourceButtonDivStyle">
+			                	<button type="button" class="btn btn-primary form-control" data-toggle="modal" data-target="#myModal" data-whatever="edit">修改</button>
+			             </div>
+					     <div class="col-sm-4 resourceButtonDivStyle">
+					       		<button type="button" class="btn btn-primary form-control" onclick="delRole()">删除</button>
+		                 </div>
+	              </div>
+                  <div id="roleTree" class="ztree scrollDefineByWWNoBorder" style="margin-top: 20px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 ">
+          <div class="panel page-panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">已分配用户列表</h3>
+            </div>
+            <div class="col-sm-12 form-group" style="width:100%">
+                <label class="col-sm-2 control-label-short firstlabelform" >手机</label>
+              	<div class="col-sm-4 divGap">
+                <input type="text" maxlength="30" class="form-control" style="width:100%" name="userPhone" id="userRoleUserPhone" autocomplete="off">
+                </div>
+                <label class="col-sm-2 control-label-short labelform">姓名</label>
+                <div class="col-sm-4 divGap">
+                <input type="text" maxlength="30" class="form-control" style="width:100%" name="userName" id="userRoleUserName" autocomplete="off"> 
+                </div>
+            </div>
+            <div class="col-sm-12 " >
+              	<button type="button" class="btn btn-primary" style="float:right;margin-right:10px" onclick="hasRoleSearch()">查询</button>
+            </div>
+            <div class="panel-body form-group">
+              
+              <table id="hasRoleUser"></table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-1 ">
+          <div class="panel page-panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">操作</h3>
+            </div>
+            <div class="panel-body">
+              <button type="button"  style="margin-top: 100px;margin-left:-13px" onclick="moveUserToRole();" > &lt;&lt;</button>
+              <button type="button"  style="margin-top: 20px;margin-left:-13px" onclick="moveUserToNoRole();"> &gt;&gt;</button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 ">
+          <div class="panel page-panel">
+            <div class="panel-heading">
+              <h3 class="panel-title">未分配用户列表</h3>
+            </div>
+            <div class="col-sm-12 form-group">
+                <label class="col-sm-2 control-label-short firstlabelform">手机</label>
+                <div class="col-sm-4 divGap">
+                <input type="text" maxlength="30"  class="form-control" style="width:100%" name="userPhone" id="userNoRoleUserPhone" autocomplete="off">
+                </div>
+	            <label class="col-sm-2 control-label-short labelform">姓名</label>
+	            <div class="col-sm-4 divGap">
+                <input type="text" maxlength="30"  class="form-control" style="width:100%" name="userName" id="userNoRoleUserName" autocomplete="off"> 
+                </div>
+              </div>
+              <div class="col-sm-12" >
+             	 <button type="button" class="btn btn-primary"  style="float:right;margin-right:10px" onclick="hasNoRoleSearch()">查询</button>
+              </div>
+            <div class="panel-body form-group">
+              <table id="noRoleUser"></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

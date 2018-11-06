@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hh.improve.dao.SalaryDao" >
+  <resultMap id="BaseResultMap" type="com.hh.improve.entity.Salary" >
+    <result column="employee_Phone" property="employeePhone" jdbcType="VARCHAR" />
+    <result column="salary" property="salary" jdbcType="DECIMAL" />
+    <result column="start_Date" property="startDate" jdbcType="VARCHAR" />
+    <result column="end_Date" property="endDate" jdbcType="VARCHAR" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    S.employee_Phone, S.salary, S.start_Date, S.end_Date, S.version,
+    S.creater, S.created_time, S.modifier, S.modified_time
+  </sql>
+
+    <select id="getSalaryPageList" resultType="com.hh.improve.entity.vo.SalaryVo">
+        SELECT E.employee_Phone AS employeePhone, S.salary, S.start_Date AS startDate, S.end_Date AS endDate, S.version,
+        S.creater, S.created_time AS createdTime, S.modifier, S.modified_time AS modifiedTime, E.employee_Name AS employeeName, E.status AS status
+        FROM hh_employee E
+        LEFT JOIN hh_salary S ON (E.employee_Phone = S.employee_Phone)
+        <where>
+            <if test="employeePhone != null and employeePhone !=''">
+                AND E.employee_Phone like "%"#{employeePhone}"%"
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                AND E.employee_Name like "%"#{employeeName}"%"
+            </if>
+            <if test='version == "1" '>
+                AND (S.version is null
+                or S.version = '1')
+            </if>
+            <if test="status!= null and status != ''">
+                AND E.status = #{status, jdbcType = VARCHAR}
+            </if>
+        </where>
+        ORDER BY E.status DESC, S.modified_time DESC, E.modified_time DESC
+    </select>
+
+    <select id="getSalaryHistoryPageList" resultType="com.hh.improve.entity.vo.SalaryVo">
+        SELECT E.employee_Phone AS employeePhone, S.salary, S.start_Date AS startDate, S.end_Date AS endDate, S.version,
+        S.creater, S.created_time AS createdTime, S.modifier, S.modified_time AS modifiedTime, E.employee_Name AS employeeName, E.status AS status
+        FROM hh_employee E
+        LEFT JOIN hh_salary S ON (E.employee_Phone = S.employee_Phone)
+        <where>
+            <if test="employeePhone != null and employeePhone !=''">
+                AND E.employee_Phone like "%"#{employeePhone}"%"
+            </if>
+            <if test="employeeName != null and employeeName != ''">
+                AND E.employee_Name like "%"#{employeeName}"%"
+            </if>
+            <if test='version == "0" '>
+                AND S.version = '0'
+            </if>
+            <if test="status!= null and status != ''">
+                AND E.status = #{status, jdbcType = VARCHAR}
+            </if>
+        </where>
+        ORDER BY S.start_Date DESC, S.modified_time DESC , S.created_time DESC
+    </select>
+
+
+    <select id="queryByCondition" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM hh_salary S
+        <where>
+            <if test="employeePhone != null and employeePhone !=''">
+                AND S.employee_Phone like "%"#{employeePhone}"%"
+            </if>
+            <if test="version != null and version != ''">
+                AND S.version = #{version, jdbcType = VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <insert id="insert" parameterType="com.hh.improve.entity.Salary">
+        INSERT INTO hh_salary (
+        employee_Phone,
+        salary,
+        start_Date,
+        end_Date,
+        version,
+        creater,
+        modifier,
+        created_time,
+        modified_time)
+        VALUES (
+        #{employeePhone,jdbcType=VARCHAR},
+        #{salary,jdbcType=DECIMAL},
+        #{startDate,jdbcType=VARCHAR},
+        #{endDate,jdbcType=VARCHAR},
+        #{version,jdbcType=VARCHAR},
+        #{creater,jdbcType=VARCHAR},
+        #{modifier,jdbcType=VARCHAR},
+        sysdate(),
+        sysdate())
+    </insert>
+    <update id="update" parameterType="com.hh.improve.entity.Salary">
+        UPDATE hh_salary
+        <set >
+            <if test="endDate != null and endDate != ''">
+                end_Date = #{endDate, jdbcType=VARCHAR},
+            </if>
+            <if test="version != null and version != ''">
+                version = '0',
+            </if>
+            <if test="modifier != null and modifier != ''">
+                 modifier = #{modifier, jdbcType = VARCHAR},
+            </if>
+            MODIFIED_TIME = sysdate()
+        </set>
+        <where >
+            employee_Phone = #{employeePhone, jdbcType=VARCHAR}
+            AND version = '1'
+        </where>
+    </update>
+
+    <delete id="delete" parameterType="com.hh.improve.entity.Salary">
+        delete FROM  hh_salary
+        <where >
+            employee_Phone = #{employeePhone, jdbcType=VARCHAR}
+            AND version = '1'
+        </where>
+    </delete>
+</mapper>

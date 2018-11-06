@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" >
+<head th:replace="fragments/fragment-common :: header(~{this :: title}, ~{this :: .custom-link})">
+  <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">HH - login</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <!-- Custom links for this page only -->
+  <link class="custom-link" href="../../static/plugin/loginStyle/css/jq22.css" rel="stylesheet" media="screen" th:href="@{/plugin/loginStyle/css/jq22.css}" />
+</head>
+<body>
+<div layout:fragment="content" ></div>
+  <!-- script -->
+  <div th:replace="fragments/fragment-common :: scripts(~{this :: .custom-script})">
+    <!--  <script class="custom-script" src="../../static/plugin/loginStyle/js/login.js" th:src="@{/plugin/loginStyle/js/login.js}"></script>-->
+      <script class="custom-script" type="text/javascript">
+          $(function() {
+              $('#login #password').focus(function() {
+                  $('#owl-login').addClass('password');
+              }).blur(function() {
+                  $('#owl-login').removeClass('password');
+              });
+          });
+      </script>
+  </div>
+</body>
+</html>

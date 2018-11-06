@@ -1,0 +1,47 @@
+
+--查看存储过程或函数的创建代码
+show create procedure proc_name;
+show create function getChildLst;
+--删除存储过程或函数的代码
+DROP PROCEDURE num_from_employee ;
+DROP FUNCTION getChildLst ;
+--创建存储过程  这是一个递归查询的MySql函数
+返回结果是所有指定列的拼接字符串   可配合FIND_IN_SET使用
+CREATE FUNCTION `getChildLst`(rootId VARCHAR(64))
+  RETURNS varchar(1000)
+  BEGIN
+    DECLARE sTemp VARCHAR(1000);
+    DECLARE sTempChd VARCHAR(1000);
+
+    SET sTemp = '$';
+    SET sTempChd =rootId;
+
+    WHILE sTempChd is not null DO
+      SET sTemp = concat(sTemp,',',sTempChd);
+      SELECT group_concat(res_code) INTO sTempChd FROM hh_res where FIND_IN_SET(parent_res_code,sTempChd)>0;
+    END WHILE;
+    RETURN sTemp;
+  END
+--使用方式1:
+  使用函数进行查询  返回结果是所有指定列的拼接字符串
+  结果:$,ROOT,ROOT_RESOURCE,RULE_MANAGER,RESOURCE_MANAGER,ROLE_MANAGER,RULE_ALLOT,USER_MANAGER
+select getChildLst('ROOT');
+--使用方式2:
+select * from hh_res
+where FIND_IN_SET(res_code, getChildLst('ROOT'));
+
+select * from hh_res
+where FIND_IN_SET(res_code, getChildLst(
+    ( select res_code from hh_res
+  where parent_res_code = 'ROOT')
+    ));
+
+
+--ROLE  角色表向下递归   查询方法的使用
+SELECT * FROM (
+  select R.ROLE_CODE from HH_ROLE R
+  where FIND_IN_SET(ROLE_CODE, getRoleChildLst(#{roleCode}))
+  ) TMP
+
+--角色表向上递归   查询方法的使用
+SELECT * from hh_role where FIND_IN_SET(role_code,queryAncestors( 'ADMIN_MANAGER'));

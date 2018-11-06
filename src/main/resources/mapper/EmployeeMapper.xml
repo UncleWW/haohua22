@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hh.improve.dao.IEmployeeDao" >
+  <resultMap id="BaseResultMap" type="com.hh.improve.entity.Employee" >
+    <result column="employee_Name" property="employeeName" jdbcType="VARCHAR" />
+    <result column="employee_Phone" property="employeePhone" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="VARCHAR" />
+    <result column="jobName" property="jobName" jdbcType="VARCHAR" />
+    <result column="hire_Date" property="hireDate" jdbcType="VARCHAR" />
+    <result column="leave_Date" property="leaveDate" jdbcType="VARCHAR" />
+    <result column="emergencyPhone" property="emergencyPhone" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    E.employee_Name, E.employee_Phone, E.sex, E.jobName, E.hire_Date, E.leave_Date,
+    E.emergencyPhone, E.status, E.address, E.remark,E.creater, E.created_time, E.modifier, E.modified_time
+  </sql>
+
+    <select id="queryByCondition" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM hh_employee E
+        <where>
+            <if test="employeeName != null and employeeName !=''">
+                AND E.employee_Name like "%"#{employeeName}"%"
+            </if>
+            <if test="employeePhone != null and employeePhone != ''">
+                AND E.employee_Phone like "%"#{employeePhone}"%"
+            </if>
+            <if test="sex != null and sex != ''">
+                AND E.sex = #{sex, jdbcType = VARCHAR}
+            </if>
+            <if test="jobName!= null and jobName != ''">
+                AND E.jobName = #{jobName, jdbcType = VARCHAR}
+            </if>
+            <if test="hireDate!= null and hireDate != ''">
+                AND E.hire_Date = #{hireDate, jdbcType = VARCHAR}
+            </if>
+            <if test="leaveDate!= null and leaveDate != ''">
+                AND E.leave_Date = #{leaveDate, jdbcType = VARCHAR}
+            </if>
+            <if test="status!= null and status != ''">
+                AND E.status = #{status, jdbcType = VARCHAR}
+            </if>
+        </where>
+        ORDER BY E.status DESC, E.modified_time DESC ,E.created_time DESC
+    </select>
+
+    <select id="query" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM hh_employee E
+        <where>
+            <if test="employeeName != null and employeeName !=''">
+                AND E.employee_Name like "%"#{employeeName}"%"
+            </if>
+            <if test="employeePhone != null and employeePhone != ''">
+                AND E.employee_Phone like "%"#{employeePhone}"%"
+            </if>
+            <if test="sex != null and sex != ''">
+                AND E.sex = #{sex, jdbcType = VARCHAR}
+            </if>
+            <if test="jobName!= null and jobName != ''">
+                AND E.jobName = #{jobName, jdbcType = VARCHAR}
+            </if>
+            <if test="hireDate!= null and hireDate != ''">
+                AND E.hire_Date = #{hireDate, jdbcType = VARCHAR}
+            </if>
+            <if test="leaveDate!= null and leaveDate != ''">
+                AND E.leave_Date = #{leaveDate, jdbcType = VARCHAR}
+            </if>
+            <if test="status!= null and status != ''">
+                AND E.status = #{status, jdbcType = VARCHAR}
+            </if>
+        </where>
+        ORDER BY E.status DESC, E.modified_time DESC ,E.created_time DESC
+    </select>
+
+    <select id="getEmployeeByPhone" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM hh_employee E
+        <where>
+            <if test="employeePhone != null and employeePhone != ''">
+                AND E.employee_Phone = #{employeePhone}
+            </if>
+        </where>
+        ORDER BY E.modified_time ,E.created_time
+    </select>
+
+    <insert id="insert" parameterType="com.hh.improve.entity.Employee">
+        INSERT INTO hh_employee
+        (
+        employee_Name,
+        employee_Phone,
+        sex,
+        jobName,
+        hire_Date,
+        leave_Date,
+        emergencyPhone,
+        status,
+        address,
+        remark,
+        creater,
+        modifier,
+        created_time,
+        modified_time)
+        VALUES(
+        #{employeeName,jdbcType=VARCHAR},
+        #{employeePhone,jdbcType=VARCHAR},
+        #{sex,jdbcType=VARCHAR},
+        #{jobName,jdbcType=VARCHAR},
+        #{hireDate,jdbcType=VARCHAR},
+        #{leaveDate,jdbcType=VARCHAR},
+        #{emergencyPhone,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{creater,jdbcType=DECIMAL},
+        #{modifier,jdbcType=VARCHAR},
+        sysdate(),
+        sysdate())
+    </insert>
+
+    <update id="update" parameterType="com.hh.improve.entity.Employee">
+        UPDATE hh_employee
+        <set >
+            <if test="employeeName != null" >
+                employee_Name = #{employeeName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null" >
+                sex = #{sex,jdbcType=VARCHAR},
+            </if>
+            <if test="jobName != null" >
+                jobName = #{jobName,jdbcType=VARCHAR},
+            </if>
+            <if test="hireDate != null" >
+                hire_Date = #{hireDate,jdbcType=VARCHAR},
+            </if>
+            <if test="leaveDate != null" >
+                leave_Date = #{leaveDate,jdbcType=VARCHAR},
+            </if>
+            <if test="emergencyPhone != null" >
+                emergencyPhone = #{emergencyPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null" >
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null" >
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="creater != null" >
+                creater = #{creater,jdbcType=VARCHAR},
+            </if>
+            <if test="modifier != null" >
+                modifier = #{modifier,jdbcType=VARCHAR},
+            </if>
+            MODIFIER = #{modifier, jdbcType=VARCHAR},
+            MODIFIED_TIME = sysdate()
+        </set>
+        <where >
+            employee_Phone = #{employeePhone, jdbcType=VARCHAR}
+        </where>
+    </update>
+</mapper>

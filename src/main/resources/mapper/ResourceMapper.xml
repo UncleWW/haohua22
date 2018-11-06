@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hh.improve.dao.ResourceDao" >
+ 	<resultMap id="BaseResultMap" type="com.hh.improve.entity.Resource" >
+    <result column="RES_CODE" property="resCode" jdbcType="VARCHAR" />
+	<result column="PARENT_RES_CODE" property="parentResCode" jdbcType="VARCHAR" />
+	<result column="RES_NAME" property="resName" jdbcType="VARCHAR" />
+	<result column="RES_URI" property="resUri" jdbcType="VARCHAR" />
+	<result column="RES_TYPE" property="resType" jdbcType="VARCHAR" />
+	<result column="NODE_TYPE" property="nodeType" jdbcType="VARCHAR" />
+	<result column="RES_ORDER" property="resOrder" jdbcType="DECIMAL" />
+	<result column="RES_ICON" property="resIcon" jdbcType="VARCHAR" />
+	<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+	<result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+	<result column="MODIFIED_TIME" property="modifiedTime" jdbcType="TIMESTAMP" />
+	<result column="CREATER" property="creater" jdbcType="VARCHAR" />
+	<result column="MODIFIER" property="modifier" jdbcType="VARCHAR" />
+	<result column="STATUS" property="status" jdbcType="VARCHAR"/>
+
+  </resultMap> 
+  <!-- 返回的字段 -->
+  <sql id="Base_Column_List" >
+    A.RES_CODE ,A.PARENT_RES_CODE ,A.RES_NAME ,A.RES_URI,A.RES_TYPE ,A.NODE_TYPE ,A.RES_ORDER,
+    A.RES_ICON ,A.REMARK ,A.CREATED_TIME ,A.MODIFIED_TIME ,A.CREATER ,A.MODIFIER ,A.STATUS 
+  </sql>
+ 
+  <select id="query" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM hh_res A
+    	<where>
+		    <if test="resCode != null and resCode != ''" >
+		    	AND A.RES_CODE = #{resCode, jdbcType=VARCHAR} 
+		    </if>
+		    <if test="parentResCode != null and parentResCode != ''" >
+		    	AND A.PARENT_RES_CODE = #{parentResCode, jdbcType=VARCHAR} 
+		    </if>
+		    <if test="resName != null and resName != ''" >
+		    	AND A.RES_NAME LIKE '%'#{resName}'%' 
+		    </if>
+		    <if test="resUri != null and resUri != ''" >
+		    	AND A.RES_URI = #{resUri, jdbcType=VARCHAR} 
+		    </if>
+		    <if test="resType != null and resType != ''" >
+		    	AND A.RES_TYPE = #{resType, jdbcType=VARCHAR} 
+		    </if>
+		    <if test="nodeType != null and nodeType != ''" >
+		    	AND A.NODE_TYPE = #{nodeType, jdbcType=VARCHAR} 
+		    </if>
+		    <if test="resOrder != null and resOrder != ''" >
+		    	AND A.RES_ORDER = #{resOrder, jdbcType=DECIMAL} 
+		    </if>
+		    <if test="remark != null and remark !=''" >
+		    	AND A.REMARK LIKE '%'#{remark}'%' 
+		    </if>
+		    <if test="status != null" >
+		    	AND A.STATUS = #{status, jdbcType=VARCHAR}
+		    </if>
+		    <if test="creater != null and creater !=''" >
+		    	AND A.CREATER = #{creater, jdbcType=VARCHAR} 
+		    </if>
+		    <if test="modifier != null and modifier !=''" >
+		    	AND A.MODIFIER = #{modifier, jdbcType=VARCHAR} 
+		    </if>
+		</where>
+	ORDER BY  A.STATUS DESC, A.RES_ORDER ASC
+  </select>
+  
+   <select id="queryByCondition" resultMap="BaseResultMap" >
+    SELECT <include refid="Base_Column_List"/>
+	FROM hh_res A
+	<where>
+		<if test="parentResCode != null and parentResCode != ''">
+			AND A.PARENT_RES_CODE = #{parentResCode, jdbcType=VARCHAR} 
+		</if>
+    </where>
+    ORDER BY A.STATUS DESC, A.RES_ORDER ASC 
+  </select>
+  
+  <select id="queryUserRes" resultMap="BaseResultMap" >
+    SELECT DISTINCT <include refid="Base_Column_List"/>
+	FROM hh_res A
+	LEFT JOIN hh_res_role RR ON RR.RES_CODE = A.RES_CODE
+	LEFT JOIN hh_role R ON R.ROLE_CODE = RR.ROLE_CODE
+	LEFT JOIN hh_role_user RU ON RU.ROLE_CODE = R.ROLE_CODE
+	LEFT JOIN hh_user U ON U.USER_PHONE = RU.USER_PHONE
+	<where>
+		<if test="resCode != null and resCode != ''">
+			AND A.RES_CODE = #{resCode, jdbcType=VARCHAR} 
+		</if>
+		<if test="resStatus != null">
+			AND A.STATUS = #{resStatus}
+		</if>
+		<if test="roleResStatus != null">
+			AND RR.STATUS = #{roleResStatus, jdbcType=VARCHAR}
+		</if>
+		<if test="roleStatus != null">
+			AND R.STATUS = #{roleStatus, jdbcType=VARCHAR}
+		</if>
+		<if test="roleUserStatus != null">
+			AND RU.STATUS = #{roleUserStatus, jdbcType=VARCHAR}
+		</if>
+		<if test="userStatus != null and userStatus != ''">
+			AND U.STATUS = #{userStatus, jdbcType=VARCHAR} 
+		</if>
+		<if test="userPhone != null and userPhone != ''">
+			AND U.USER_PHONE = #{userPhone, jdbcType=VARCHAR}
+		</if>
+    </where>
+    ORDER BY A.STATUS DESC, A.RES_ORDER ASC 
+  </select>
+  
+   <insert id="insert" parameterType="com.hh.improve.entity.Resource">
+    INSERT INTO hh_res
+	  (PARENT_RES_CODE,
+	   RES_CODE,
+	   RES_NAME,
+	   RES_URI,
+	   RES_TYPE,
+	   RES_ORDER,
+	   RES_ICON,
+	   STATUS,
+	   REMARK,
+	   CREATER,
+	   CREATED_TIME)
+	VALUES
+	  ( #{parentResCode,jdbcType=VARCHAR},
+	   #{resCode,jdbcType=VARCHAR},
+	   #{resName,jdbcType=VARCHAR},
+	   #{resUri,jdbcType=VARCHAR},
+	   #{resType,jdbcType=VARCHAR},
+	   #{resOrder,jdbcType=DECIMAL},
+	   #{resIcon,jdbcType=VARCHAR},
+	   #{status,jdbcType=VARCHAR,},
+	   #{remark,jdbcType=VARCHAR},
+	   #{creater,jdbcType=VARCHAR},
+	   sysdate())
+  </insert>
+  
+   <update id="update" parameterType="com.hh.improve.entity.Resource">
+    UPDATE hh_res
+    <set >
+      <if test="resName != null" >
+        RES_NAME = #{resName, jdbcType=VARCHAR},
+      </if>
+      <if test="resUri != null" >
+        RES_URI = #{resUri, jdbcType=VARCHAR},
+      </if>
+      <if test="resType != null" >
+        RES_TYPE = #{resType, jdbcType=VARCHAR},
+      </if>
+      <if test="resOrder != null" >
+        RES_ORDER = #{resOrder, jdbcType=DECIMAL},
+      </if>
+       <if test="resIcon != null" >
+        RES_ICON = #{resIcon, jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status, jdbcType=VARCHAR,},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark, jdbcType=VARCHAR},
+      </if>
+        MODIFIER = #{modifier, jdbcType=VARCHAR},
+        MODIFIED_TIME = sysdate()
+    </set>
+    <where >
+		 RES_CODE = #{resCode, jdbcType=VARCHAR}
+    </where> 
+  </update>
+<!--   将指定节点及其所有后代节点置为无效  ORACLE方法，在MySql中无法使用 -->
+  <!-- <update id="deleteChildrens" parameterType="com.hh.improve.entity.Resource">
+    UPDATE hh_res
+    <set >
+      <if test="status != null" >
+        STATUS = #{status, jdbcType=VARCHAR},
+      </if>
+        MODIFIER = #{modifier, jdbcType=VARCHAR},
+        MODIFIED_TIME = sysdate()
+    </set>
+    <where >
+		RES_CODE IN (
+		SELECT RES_CODE from hh_res
+		START WITH RES_CODE = #{resCode,jdbcType=VARCHAR}
+		CONNECT BY PRIOR RES_CODE = PARENT_RES_CODE)
+    </where> 
+  </update>-->
+	<!--   将指定节点及其所有后代节点置为无效
+		MySql中要实现递归查询需要创建函数，具体创建方式查看SQL
+		使用如下-->
+	<update id="deleteChildrens" parameterType="com.hh.improve.entity.Resource">
+		UPDATE hh_res
+		<set >
+			<if test="status != null" >
+				STATUS = #{status, jdbcType=VARCHAR},
+			</if>
+			MODIFIER = #{modifier, jdbcType=VARCHAR},
+			MODIFIED_TIME = sysdate()
+		</set>
+		<where>
+			RES_CODE IN (
+				SELECT * FROM (
+					select H.RES_CODE from hh_res H
+					where FIND_IN_SET(res_code, getChildLst(#{resCode}))
+				) TMP
+			)
+		</where>
+	</update>
+<!--   根据用户查询其拥有的资源 -->
+   <select id="getResSetByUser" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" /> 
+    FROM hh_res A
+    WHERE EXISTS (
+    	SELECT RR.RES_CODE RES_CODE FROM hh_res_role RR
+    	LEFT JOIN hh_role_user RU ON RR.ROLE_CODE = RU.ROLE_CODE
+    	WHERE RR.RES_CODE = A.RES_CODE 
+    	AND RR.STATUS = '1'
+    	AND RU.STATUS = '1' 
+    	AND RU.USER_PHONE = #{userPhone, jdbcType=VARCHAR}
+    )
+ 	ORDER BY  A.STATUS DESC, A.RES_ORDER ASC
+  </select>
+</mapper>

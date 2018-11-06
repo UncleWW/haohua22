@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorator="layouts/layout-resource">
+<head>
+  <title>HH-资源管理</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+</head>
+<body>
+  <div layout:fragment="content" style="">
+    <!-- 弹出框  开始         Role角色弹出框-->
+    <div class="modal fade" id="roleModal" tabindex="-1" role="dialog" data-backdrop="true" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">  
+        <div class="modal-content">  
+          <div class="modal-header">  
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">  
+              <span aria-hidden="true">&times;</span>  
+            </button>  
+            <h4 class="modal-title" id="myModalLabel">标题</h4>  
+          </div> 
+          <!-- 内容开始 --> 
+          <div class="modal-body">
+            <table id="roleSelectCondition"></table>
+          </div>
+          <!-- 内容结束 --> 
+          <div class="modal-footer">  
+            <button type="button" id="btn1" class="btn btn-default"  onclick="closeModel();">关闭</button>  
+          </div>  
+        </div>  
+      </div>  
+    </div>  
+    <!-- 弹出框  结束   Role-->
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="panel page-panel" >
+            <div class="panel-heading">
+              <h3 class="panel-title">资源管理</h3>
+            </div>
+            <div class="panel-body" >
+	              <div class="form-group">
+		              <div id="buttonStyle"  class="col-sm-12 form-group" style="margin-top: -20px;margin-left: -15px;">
+			               <div class="col-sm-4 resourceButtonDivStyle" >
+			                   <button  class="btn btn-primary form-control" type="button" id="addbutton" onclick="addFunction()">新增</button>
+			               </div>
+			               <div class="col-sm-4 resourceButtonDivStyle">
+			                   <button  class="btn btn-primary form-control" type="button" id="editbutton"  onclick="editFunction()">修改</button>
+			               </div>
+			               <div class="col-sm-4 resourceButtonDivStyle">
+			                   <button  class="btn btn-primary form-control" type="button" id="delbutton"  onclick="delFunction()">删除</button>
+			               </div>
+		              </div>
+		              <div id="resTree" class="ztree scrollDefineByWWNoBorder" style="margin-top: 20px;"></div>
+	              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="panel page-panel">
+           <div class="panel-heading">
+              <h3 class="panel-title " id="titleUpdate">资源详情</h3>
+            </div>
+            <div class="panel-body">
+              <div class="form-group modal-body">
+                <form id="form1" onsubmit="return false" class="form-horizontal" autocomplete="off">
+                  <input type="hidden" name="parentResCode" id="parentResCode">
+                  <div class="col-sm-12 form-group-line rowGroup">
+                    <label class="control-label col-sm-4">父菜单名称：</label>
+                    <div class="col-sm-7">
+                      <input class="form-control" id="parentResName" maxlength="30"  disabled="disabled">
+<!--                       <label class="control-label" style="margin-left:10px; color: green" id="parentResName"></label> -->
+                    </div>
+                    <div class="col-sm-1"> <strong>*</strong> </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-4">菜单代码：</label>
+                    <div class="col-sm-7 rowGroup">
+                      <input name="resCode" class="form-control" id="resCode" maxlength="30" type="text">
+                    </div>
+                    <div class="col-sm-1"> <strong>*</strong> </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-4">菜单名称：</label>
+                    <div class="col-sm-7 rowGroup">
+                      <input name="resName" class="form-control" id="resName" maxlength="30" type="text">
+                    </div>
+                    <div class="col-sm-1"> <strong>*</strong> </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-4">路径：</label>
+                    <div class="col-sm-7 rowGroup">
+                      <input name="resUri" class="form-control" id="resUri" maxlength="200" type="text">
+                    </div>
+                    <div class="col-sm-1"> <strong>*</strong> </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-4">排序：</label>
+                    <div class="col-sm-7 rowGroup">
+                      <input name="resOrder" id="resOrder" type="text" class="form-control">
+                    </div>
+                    <div class="col-sm-1"> <strong></strong> </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-4">菜单类型：</label>
+                    <div class="col-sm-7 radio">
+                      <label>
+                        <input name="resType" id="resType1" type="radio" value="1">
+                        <span>菜单</span>
+                      </label> 
+                      <label>
+                        <input name="resType" id="resType2" type="radio" value="2">
+                        <span>按钮</span>
+                      </label>
+                    </div>
+                    <div class="col-sm-1"> <strong>*</strong> </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-4">选择图标：</label>
+                    <div class="col-sm-7">
+                      <input type="hidden" name="resIcon" id="resIcon">
+                      <div id="saytext" style="font-size: 20px;" class="emotion"></div>
+                    </div>
+                    <div class="col-sm-1"> <strong></strong> </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-4 ">状态：</label>
+                    <div class="col-sm-7">
+                      <select name="status" id="status" class="form-control">
+                        <option value="1" >有效</option>
+                        <option value="0" >无效</option>
+                       </select>
+                    </div>
+                    <div class="col-sm-1"> <strong>*</strong> </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <label class="control-label col-sm-4">备注：</label>
+                    <div class="col-sm-7 rowGroup">
+                      <textarea rows="3" cols="5" name="remark" id="remark"
+                        class="form-control" maxlength="2000"></textarea>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 form-group-line">
+                    <div class="col-sm-11" style=" display: none" id="dealDiv">
+                      <button type="button" id="saveButton" class="btn btn-primary">保存</button>
+                      <button type="button" class="btn btn-default" onclick="resFromInvalid()">取消</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

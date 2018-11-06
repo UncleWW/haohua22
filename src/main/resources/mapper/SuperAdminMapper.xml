@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hh.improve.dao.ISuperAdminDao" >
+  
+  <resultMap id="BaseResultMap" type="com.hh.improve.entity.SuperAdmin" >
+    <result column="USER_PHONE" property="userPhone" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="ENCRYPT_PASSWORD" property="encryptPassword" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR"/>
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="CREATER" property="creater" jdbcType="VARCHAR" />
+    <result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="MODIFIER" property="modifier" jdbcType="VARCHAR" />
+    <result column="MODIFIED_TIME" property="modifiedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="BaseColumnList" >
+    SA.USER_PHONE, SA.USER_NAME, SA.ENCRYPT_PASSWORD,
+    SA.STATUS, SA.REMARK, SA.CREATER, SA.CREATED_TIME, SA.MODIFIER, SA.MODIFIED_TIME
+  </sql>
+  
+  <select id="query" resultMap="BaseResultMap" >
+    SELECT <include refid="BaseColumnList"/>
+      FROM hh_super_admin SA
+    <where> 
+      <if test="userPhone != null and userPhone != ''">
+        AND SA.USER_PHONE = #{userPhone, jdbcType = VARCHAR}
+      </if>
+      <if test="userName != null and userName != ''">
+        AND SA.USER_NAME = #{userName, jdbcType = VARCHAR}
+      </if>
+      <if test="status != null">
+        AND SA.STATUS = #{status, jdbcType = VARCHAR}
+      </if>
+    </where>
+    ORDER BY SA.STATUS DESC, SA.MODIFIED_TIME DESC
+  </select>
+</mapper>

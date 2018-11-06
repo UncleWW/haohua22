@@ -1,0 +1,294 @@
+-- 凭证主表
+DROP TABLE IF EXISTS hh_voucher;
+HH_VOUCHER
+DROP TABLE IF EXISTS hh_voucherSon;
+HH_VOUCHERSON
+DROP TABLE IF EXISTS hh_customer;
+HH_CUSTOMER
+DROP TABLE IF EXISTS hh_payroll;
+HH_PAYROLL
+DROP TABLE IF EXISTS hh_salary;
+HH_SALARY
+DROP TABLE IF EXISTS hh_employee;
+HH_EMPLOYEE
+DROP TABLE IF EXISTS hh_user;
+HH_USER
+DROP TABLE IF EXISTS hh_res;
+HH_RES
+DROP TABLE IF EXISTS hh_res_role;
+HH_RES_ROLE
+DROP TABLE IF EXISTS hh_role;
+HH_ROLE
+DROP TABLE IF EXISTS hh_role_user;
+HH_ROLE_USER
+DROP TABLE IF EXISTS hh_super_admin;
+HH_SUPER_ADMIN
+
+DROP TABLE IF EXISTS hh_voucher;
+create table hh_voucher
+(
+  voucher_Id      VARCHAR(64)  not null COMMENT '主键——凭证编号八位顺序字符串[00000000]' ,
+  customer_Id     VARCHAR(64)  not null COMMENT '客户唯一主键' ,
+  amount   DECIMAL   COMMENT '此凭证全部商品总价',
+  pay_Amount   DECIMAL   COMMENT '收到的货款',
+  debt_Amount   DECIMAL   COMMENT '欠款',
+  voucher_Date    VARCHAR(32) not null COMMENT '发票日期YYYY-MM-DD' ,
+  voucher_Maker    VARCHAR(64)  COMMENT '制单人' ,
+  remark    VARCHAR(200)  COMMENT '备注信息' ,
+  creater     VARCHAR(64) COMMENT '创建人',
+  created_time   datetime DEFAULT null,
+  modifier     VARCHAR(64) ,
+  modified_time  datetime DEFAULT null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+alter table hh_voucher add primary key (voucher_Id);
+
+
+-- 凭证子表
+DROP TABLE IF EXISTS hh_voucherSon;
+create table hh_voucherSon
+(
+  goods_Id        INTEGER  COMMENT '序号' ,
+  voucher_Id      VARCHAR(64)  not null COMMENT '主键——凭证编号八位顺序字符串[00000000]' ,
+  goods_Name      VARCHAR(64)  not null COMMENT '商品名称',
+  goods_Format    VARCHAR(64)  COMMENT '商品规格' ,
+  goods_unit    VARCHAR(16)  COMMENT '计量单位' ,
+  goods_number  INTEGER  COMMENT '数量' ,
+  unit_price    DECIMAL   COMMENT '单价',
+  total_price   DECIMAL   COMMENT '总价',
+  remark    VARCHAR(200)  COMMENT '备注信息' ,
+  creater     VARCHAR(64) COMMENT '创建人',
+  created_time   datetime DEFAULT null,
+  modifier     VARCHAR(64) ,
+  modified_time  datetime DEFAULT null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- 客户表
+DROP TABLE IF EXISTS hh_customer;
+create table hh_customer
+(
+  customer_Id    VARCHAR(64)  not null COMMENT '客户编码唯标识uuid' ,
+  customer_Name  VARCHAR(64)  not null COMMENT '客户名' ,
+  customer_Phone  VARCHAR(32)  COMMENT '客户手机号' ,
+  address         VARCHAR(100)  COMMENT '地址',
+  remark    VARCHAR(200)  COMMENT '备注信息' ,
+  creater     VARCHAR(64) COMMENT '创建人',
+  created_time   datetime DEFAULT null,
+  modifier     VARCHAR(64) ,
+  modified_time  datetime DEFAULT null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+alter table hh_customer add primary key (customer_Id);
+
+
+-- 工资发放记录表
+DROP TABLE IF EXISTS hh_payroll;
+create table hh_payroll
+(
+  payroll_Id      VARCHAR(64)  not null COMMENT 'UUID主键' ,
+  employee_Phone  VARCHAR(64)  not null COMMENT '手机号' ,
+  salary         DECIMAL  not null COMMENT '应发工资',
+  salary_paid    DECIMAL  not null COMMENT '实际发放工资',
+  salary_Date    VARCHAR(32) not null COMMENT '当前月份YYYY-MM' ,
+  remark    VARCHAR(200)  COMMENT '备注信息' ,
+  creater     VARCHAR(64) COMMENT '创建人',
+  created_time   datetime DEFAULT null,
+  modifier     VARCHAR(64) ,
+  modified_time  datetime DEFAULT null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+alter table hh_payroll add primary key (payroll_Id);
+
+-- 工资表
+DROP TABLE IF EXISTS hh_salary;
+create table hh_salary
+(
+  employee_Phone  VARCHAR(64)  COMMENT '手机号 主键' ,
+  salary         DECIMAL  not null COMMENT '工资',
+  start_Date  VARCHAR(32) COMMENT '开始日期YYYY-MM' ,
+  end_Date    VARCHAR(32)  COMMENT '结束日期YYYY-MM' ,
+  version   VARCHAR(32)  not null COMMENT '版本号1:当前版本，0历史版本' ,
+  creater     VARCHAR(64) COMMENT '创建人',
+  created_time   datetime DEFAULT null,
+  modifier     VARCHAR(64) ,
+  modified_time  datetime DEFAULT null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- 没有登录权限的人员信息表(雇员)
+DROP TABLE IF EXISTS hh_employee;
+create table hh_employee
+(
+  employee_Name   VARCHAR(64) not null COMMENT '用户名',
+  employee_Phone  VARCHAR(64)  COMMENT '手机号 主键' ,
+  sex         VARCHAR(2) not null COMMENT '性别 1男 0女',
+  jobName      VARCHAR(32)  COMMENT '职位名称',
+  hire_Date  VARCHAR(32) not null COMMENT '入职日期' ,
+  leave_Date  VARCHAR(32)  COMMENT '离职日期' ,
+  emergencyPhone  VARCHAR(32) COMMENT '紧急联系人电话' ,
+  status VARCHAR(2) not null COMMENT '状态（1在职，0离职）',
+  address     VARCHAR(100) COMMENT '家庭住址' ,
+  remark     VARCHAR(100) COMMENT '备注' ,
+  creater     VARCHAR(64) COMMENT '创建人',
+  created_time   datetime DEFAULT null,
+  modifier     VARCHAR(64) ,
+  modified_time  datetime DEFAULT null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+alter table hh_employee add primary key (employee_Phone);
+
+-- 用户表
+DROP TABLE IF EXISTS hh_user;
+create table hh_user
+(
+  user_Name   VARCHAR(64) not null COMMENT '用户名',
+  user_Phone  VARCHAR(64) COMMENT '手机号' ,
+  password    VARCHAR(64) COMMENT '密码',
+  sex         VARCHAR(2) not null COMMENT '性别 1男 0女',
+  status VARCHAR(2) not null COMMENT '状态（1有效，0无效）',
+  creater     VARCHAR(64) COMMENT '创建人',
+  created_time   datetime DEFAULT null,
+  modifier     VARCHAR(64) ,
+  modified_time  datetime DEFAULT null
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+alter table hh_user add primary key (user_Phone);
+
+
+-- 资源表
+DROP TABLE IF EXISTS hh_res;
+create table hh_res
+(
+  res_code        VARCHAR(32) not null COMMENT '资源编码',
+  parent_res_code VARCHAR(64) COMMENT '父资源编码',
+  res_name        VARCHAR(64) COMMENT '资源名称',
+  res_uri         VARCHAR(512) COMMENT '路径',
+  res_type        VARCHAR(1) COMMENT '资源类型1菜单2按钮',
+  res_order       INT(9) default 99 COMMENT '资源排序',
+  res_icon        VARCHAR(64) COMMENT '资源图标',
+  remark          VARCHAR(100) COMMENT '备注',
+  created_time    datetime DEFAULT null COMMENT '创建时间',
+  modified_time   datetime DEFAULT null COMMENT '修改时间',
+  creater         VARCHAR(32) COMMENT '创建人',
+  modifier        VARCHAR(32) COMMENT '修改人',
+  status          VARCHAR(1) default 0 COMMENT '状态    1有效    0 无效',
+  node_type       VARCHAR(1) default 1 COMMENT '节点类型 1叶子节点 0非叶子'
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+alter table hh_res add primary key (res_code);
+
+-- 资源角色关系表
+DROP TABLE IF EXISTS hh_res_role;
+create table hh_res_role
+(
+  res_code      VARCHAR(64) not null COMMENT '资源编码',
+  role_code     VARCHAR(64) not null COMMENT '角色编码',
+  remark        VARCHAR(100) COMMENT '备注',
+  created_time    datetime DEFAULT null COMMENT '创建时间',
+  modified_time   datetime DEFAULT null COMMENT '修改时间',
+  creater       VARCHAR(32) COMMENT '创建人',
+  modifier      VARCHAR(32) COMMENT '修改人',
+  status        VARCHAR(1) default 0 COMMENT '状态    1有效    0无效'
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+alter table hh_res_role add primary key (res_code, role_code);
+
+-- 角色表
+DROP TABLE IF EXISTS hh_role;
+create table hh_role
+(
+  role_code        VARCHAR(64) not null COMMENT '角色编码',
+  parent_role_code VARCHAR(64) COMMENT '父角色编码',
+  role_name        VARCHAR(64) not null COMMENT '角色名称',
+  role_order       INT(3) default 99 COMMENT '排序',
+  role_type        VARCHAR(1) default 1 not null COMMENT '角色类型',
+  node_type        VARCHAR(1) default 1 COMMENT '节点类型 1叶子节点 0非叶子',
+  remark           VARCHAR(100) COMMENT '备注',
+  created_time    datetime DEFAULT null COMMENT '创建时间',
+  modified_time   datetime DEFAULT null COMMENT '修改时间',
+  creater         VARCHAR(32) COMMENT '创建人',
+  modifier        VARCHAR(32) COMMENT '修改人',
+  status           VARCHAR(1) default 0 COMMENT '状态    1有效    0 无效'
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+alter table hh_role add primary key (role_code);
+
+-- 用户角色表
+DROP TABLE IF EXISTS hh_role_user;
+create table hh_role_user
+(
+  user_phone  VARCHAR(32) not null COMMENT '用户手机号',
+  role_code     VARCHAR(64) not null COMMENT '角色编码',
+  remark        VARCHAR(100) COMMENT '备注',
+  created_time    datetime DEFAULT null COMMENT '创建时间',
+  modified_time   datetime DEFAULT null COMMENT '修改时间',
+  creater         VARCHAR(32) COMMENT '创建人',
+  modifier        VARCHAR(32) COMMENT '修改人',
+  status        VARCHAR(1) default 0 COMMENT '状态    1有效    0无效'
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+alter table hh_role_user add primary key (user_phone, role_code);
+
+-- Create table  超级管理员登录
+create table hh_super_admin
+(
+  user_phone  VARCHAR(32) not null COMMENT '用户手机号',
+  user_Name         VARCHAR(64) not null COMMENT '超管用户名',
+  encrypt_password VARCHAR(64) not null COMMENT '超管密码',
+  status           VARCHAR(1) default 0 not null COMMENT '状态 0无效  1有效',
+  remark           VARCHAR(100),
+  created_time    datetime DEFAULT null COMMENT '创建时间',
+  modified_time   datetime DEFAULT null COMMENT '修改时间',
+  creater         VARCHAR(32) COMMENT '创建人',
+  modifier        VARCHAR(32) COMMENT '修改人'
+);
+alter table hh_super_admin add primary key (user_phone);
+
+--创建函数  资源表   向下递归   Resource资源表(hh_res)[查询所有后代节点包括本节点]
+CREATE FUNCTION `getChildLst`(rootId VARCHAR(64))
+  RETURNS varchar(1000)
+  BEGIN
+    DECLARE sTemp VARCHAR(1000);
+    DECLARE sTempChd VARCHAR(1000);
+
+    SET sTemp = '$';
+    SET sTempChd =rootId;
+
+    WHILE sTempChd is not null DO
+      SET sTemp = concat(sTemp,',',sTempChd);
+      SELECT group_concat(res_code) INTO sTempChd FROM hh_res where FIND_IN_SET(parent_res_code,sTempChd)>0;
+    END WHILE;
+    RETURN sTemp;
+END
+
+
+
+--创建函数 角色表    向下递归  Role(hh_res)[查询所有后代节点包括本节点]
+CREATE FUNCTION `getRoleChildLst`(rootId VARCHAR(64))
+  RETURNS varchar(1000)
+  BEGIN
+    DECLARE sTemp VARCHAR(1000);
+    DECLARE sTempChd VARCHAR(1000);
+
+    SET sTemp = '$';
+    SET sTempChd =rootId;
+
+    WHILE sTempChd is not null DO
+      SET sTemp = concat(sTemp,',',sTempChd);
+      SELECT group_concat(role_code) INTO sTempChd FROM hh_role where FIND_IN_SET(parent_role_code,sTempChd)>0;
+    END WHILE;
+    RETURN sTemp;
+  END
+
+--创建函数    角色表   向上递归
+DROP FUNCTION IF EXISTS queryAncestors;
+CREATE FUNCTION queryAncestors(rootId VARCHAR(64))
+  RETURNS varchar(1000)
+  BEGIN
+    DECLARE sTemp VARCHAR(1000);
+    DECLARE sTempPar VARCHAR(1000);
+    SET sTemp = '';
+    SET sTempPar =rootId;
+    WHILE sTempPar is not null DO
+      IF sTemp != '' THEN
+        SET sTemp = concat(sTemp,',',sTempPar);
+      ELSE
+        SET sTemp = sTempPar;
+      END IF;
+      SET sTemp = concat(sTemp,',',sTempPar);
+      SELECT group_concat(parent_role_code) INTO sTempPar FROM hh_role where parent_role_code<>role_code and FIND_IN_SET(role_code,sTempPar)>0;
+    END WHILE;
+    RETURN sTemp;
+  END
+

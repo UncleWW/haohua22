@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorator="layouts/layout-superlogin">
+<head>
+  <title>SuperLogin</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+</head>
+<body>
+  <div layout:fragment="content" style="width: 23.6%; margin:40px auto">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="content">
+          <div class="header">
+            <div class="logo text-center">
+              <a href="#">
+                <img th:src="@{/img/logo_ch.png}" alt="CH Logo" style="margin:0px 8px 8px 0px"/>
+                <strong style="font-size: 24px; color: #00AAFF">阜阳浩华出入库系统</strong>
+              </a>
+            </div>
+          </div>
+          <form class="form-auth-small" th:action="@{/super/login}" autocomplete="off">
+            <div class="form-group">
+              <label for="signin-superamdin-useraccount" class="control-label sr-only">Username</label>
+              <input type="text" class="form-control" id="signin-superamdin-useraccount" name="superAdminUserName" placeholder="账号">
+            </div>
+            <div class="form-group">
+              <label for="signin-superamdin-password" class="control-label sr-only">Password</label>
+              <input type="password" class="form-control" id="signin-superamdin-password" name="superAdminPassword" placeholder="密码">
+            </div>
+            <div th:class="'' ne ${errorMsg} ? 'error' : 'error-hide'">
+              <span th:text="${errorMsg}">未知错误</span>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">登录</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorator="layouts/layout-voucherList">
+<head>
+  <title>HH-凭证查询</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  
+</head>
+<body>
+<div layout:fragment="content" style="">
+    <!-- 搜索框      开始 -->
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="form-group" style="margin-top: 15px;">
+                <form id="formSearch" onsubmit="return false" class="form-horizontal" >
+                    <div class="col-sm-12 form-group"  >
+                        <label class="control-label col-sm-1"
+                               for="txt_search_voucherId">凭证号：</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control"
+                                   id="txt_search_voucherId" />
+                        </div>
+                        <label class="control-label col-sm-1"
+                               for="txt_search_customerName">客户名称：</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control"
+                                   id="txt_search_customerName" />
+                        </div>
+                        <label class="control-label col-sm-1" for="txt_search_debt">是否欠款：</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" style="width:100%" id="txt_search_debt" />
+                        </div>
+                    </div>
+                    <div class="col-sm-12 form-group"  >
+                        <label class="control-label col-sm-1" for="start_time">开始时间</label>
+                        <div class="col-sm-2 datetime">
+                            <div class="input-group date form_datetime" id="start_time" data-link-field="start_time" data-date="" data-date-format="yyyy-mm-dd" >
+                                <input type="text" class="form-control" size="16" id="search_start_time" name="startTime" value="">
+                                <span class="input-group-addon" hidden=true><span class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                        </div>
+                        <label class="control-label col-sm-1" for="end_time">结束时间</label>
+                        <div class="col-sm-2 datetime">
+                            <div class="input-group date form_datetime" id="end_time" data-link-field="end_time" data-date="" data-date-format="yyyy-mm-dd" >
+                                <input type="text" class="form-control" size="16" id="search_end_time" name="endTime" value="">
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="button" class="btn btn-primary"
+                                    id="voucher-query-btn">查询</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 搜索框      结束 -->
+    <!-- 列表  Table    开始 -->
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <table id="tb_voucher"></table>
+        </div>
+    </div>
+    <!-- 列表  Table    结束 -->
+</div>
+</body>
+</html>

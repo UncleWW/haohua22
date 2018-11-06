@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hh.improve.dao.RoleDao" >
+    <resultMap id="BaseResultMap" type="com.hh.improve.entity.Role" >
+    <result column="ROLE_CODE" property="roleCode" jdbcType="VARCHAR" />
+    <result column="PARENT_ROLE_CODE" property="parentRoleCode" jdbcType="VARCHAR" />
+    <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
+	<result column="ROLE_ORDER" property="roleOrder" jdbcType="DECIMAL" />
+    <result column="ROLE_TYPE" property="roleType" jdbcType="VARCHAR" />
+	<result column="NODE_TYPE" property="nodeType" jdbcType="VARCHAR" />
+	<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+	<result column="CREATED_TIME" property="createdTime" jdbcType="TIMESTAMP" />
+	<result column="MODIFIED_TIME" property="modifiedTime" jdbcType="TIMESTAMP" />
+	<result column="CREATER" property="creater" jdbcType="VARCHAR" />
+	<result column="MODIFIER" property="modifier" jdbcType="VARCHAR" />
+	<result column="STATUS" property="status" jdbcType="VARCHAR"  />
+  </resultMap>
+ 
+  <!-- 查询的列 -->
+  <sql id="BaseColumnList" >
+   U.ROLE_CODE, U.PARENT_ROLE_CODE, U.ROLE_NAME, U.ROLE_ORDER, U.ROLE_TYPE, 
+   U.NODE_TYPE, U.REMARK, U.CREATED_TIME, U.MODIFIED_TIME, U.CREATER, 
+   U.MODIFIER, U.STATUS
+  </sql>
+
+  <select id="query"  parameterType="com.hh.improve.entity.Role" resultMap="BaseResultMap" >
+    SELECT <include refid="BaseColumnList"/>
+	FROM hh_role U
+	<where>
+		<if test="roleCode != null and roleCode != ''">
+			AND U.ROLE_CODE = #{roleCode, jdbcType = VARCHAR} 
+		</if>
+		<if test="parentRoleCode != null and parentRoleCode != ''">
+    		AND U.PARENT_ROLE_CODE = #{parentRoleCode, jdbcType = VARCHAR} 
+    	</if>
+    	<if test="roleName != null and roleName != ''">
+    		AND U.ROLE_NAME like '%'#{roleName}'%'
+    	</if>
+    	<if test="roleOrder != null and roleOrder != ''">
+    		AND U.ROLE_ORDER = #{roleOrder, jdbcType = DECIMAL} 
+    	</if>
+		<if test="roleType != null and roleType != ''">
+    		AND U.ROLE_TYPE = #{roleType, jdbcType=VARCHAR}
+    	</if>
+    	<if test="nodeType != null and nodeType != ''">
+    		AND U.NODE_TYPE = #{nodeType, jdbcType=VARCHAR}
+    	</if>
+    	<if test="remark != null and remark != ''">
+    		AND U.REMARK like '%'#{remark}'%'
+    	</if>
+    	<if test="creater != null and creater !=''" >
+		    AND U.CREATER = #{creater, jdbcType=VARCHAR} 
+		</if>
+	    <if test="modifier != null and modifier !=''" >
+		    AND U.MODIFIER = #{modifier, jdbcType=VARCHAR} 
+		</if>
+    	<if test="status != null">
+    		AND U.STATUS = #{status, jdbcType=VARCHAR}
+    	</if>
+    </where>
+    ORDER BY U.STATUS ASC, U.ROLE_ORDER ASC 
+  </select>
+  <select id="queryByCondition" resultMap="BaseResultMap" >
+    SELECT <include refid="BaseColumnList"/>
+	FROM hh_role U
+	<where>
+		<if test="parentRoleCode != null and parentRoleCode != ''">
+			AND U.PARENT_ROLE_CODE = #{parentRoleCode, jdbcType=VARCHAR} 
+		</if>
+    </where>
+    ORDER BY U.STATUS DESC, U.ROLE_ORDER ASC 
+  </select>
+  
+  <select id="queryUserRole" resultMap="BaseResultMap" >
+    SELECT <include refid="BaseColumnList"/>
+	FROM hh_role U
+	LEFT JOIN hh_role_user RU ON RU.ROLE_CODE = U.ROLE_CODE
+	LEFT JOIN hh_user UU ON UU.USER_PHONE = RU.USER_PHONE
+	<where>
+		<if test="roleStatus != null">
+			AND U.STATUS = #{roleStatus, jdbcType=VARCHAR}
+		</if>
+		<if test="roleUserStatus != null">
+			AND RU.STATUS = #{roleUserStatus, jdbcType=VARCHAR}
+		</if>
+		<if test="userPhone != null and userPhone != ''">
+			AND UU.USER_PHONE = #{userPhone, jdbcType=VARCHAR}
+		</if>
+		<if test="userStatus != null and userStatus != ''">
+			AND UU.STATUS = #{userStatus, jdbcType=VARCHAR} 
+		</if>
+    </where>
+    ORDER BY U.STATUS DESC, U.ROLE_ORDER ASC 
+  </select>
+  
+  <select id="queryRoleByParentCode" parameterType="String" resultMap="BaseResultMap" >
+    SELECT <include refid="BaseColumnList"/>
+	FROM hh_role U
+	<where>
+		<if test="parentRoleCode != null and parentRoleCode != ''">
+    		AND U.PARENT_ROLE_CODE = #{parentRoleCode} 
+    	</if>
+    	<if test="parentRoleCode == null or parentRoleCode == ''">
+    		AND U.PARENT_ROLE_CODE IS NULL 
+    	</if>
+    </where>
+    ORDER BY U.STATUS ASC, U.ROLE_ORDER ASC 
+  </select>
+  
+   <!-- 创建角色信息-->
+  <insert id="insert" parameterType="com.hh.improve.entity.Role" >
+    INSERT INTO hh_role
+    ( ROLE_CODE, 
+      PARENT_ROLE_CODE, 
+      ROLE_NAME,
+      ROLE_ORDER, 
+      ROLE_TYPE, 
+      NODE_TYPE, 
+      REMARK, 
+      CREATED_TIME, 
+      CREATER,  
+      STATUS) 
+	VALUES 
+	(#{roleCode, jdbcType=VARCHAR}, 
+	 #{parentRoleCode, jdbcType=VARCHAR},  
+	 #{roleName, jdbcType=VARCHAR},
+	 #{roleOrder, jdbcType=VARCHAR},
+	 #{roleType, jdbcType=VARCHAR}, 
+	 #{nodeType, jdbcType=VARCHAR},  
+	 #{remark, jdbcType=VARCHAR},
+	 sysdate(),
+	 #{creater, jdbcType=VARCHAR}, 
+	 #{status, jdbcType=VARCHAR})
+  </insert>
+  
+  <update id="update" parameterType="com.hh.improve.entity.Role" >
+    UPDATE hh_role
+    <set>
+      <if test="roleName != null" >
+        ROLE_NAME = #{roleName, jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status, jdbcType=VARCHAR},
+      </if>
+      <if test="roleOrder != null" >
+        ROLE_ORDER = #{roleOrder, jdbcType=VARCHAR},
+      </if>
+      <if test="roleType != null" >
+        ROLE_TYPE = #{roleType, jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark, jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        MODIFIER = #{modifier, jdbcType=VARCHAR},
+      </if>
+      MODIFIED_TIME = sysdate()
+    </set>
+    WHERE ROLE_CODE = #{roleCode, jdbcType=VARCHAR}
+  </update>
+  <!--   将制定节点及其所有后代节点置为无效  Oracle写法 -->
+   <!--<update id="deleteChildrens" parameterType="com.hh.improve.entity.Role">
+    UPDATE hh_role
+    <set >
+      <if test="status != null" >
+        STATUS = #{status, jdbcType=VARCHAR},
+      </if>
+        MODIFIER = #{modifier, jdbcType=VARCHAR},
+        MODIFIED_TIME = sysdate()
+    </set>
+    <where >
+		ROLE_CODE IN (
+		select ROLE_CODE from hh_role
+		START WITH ROLE_CODE = #{roleCode,jdbcType=VARCHAR}
+		CONNECT BY PRIOR ROLE_CODE = PARENT_ROLE_CODE)
+    </where> 
+  </update>-->
+    <!--   将制定节点及其所有后代节点置为无效 -->
+    <update id="deleteChildrens" parameterType="com.hh.improve.entity.Role">
+        UPDATE hh_role
+        <set >
+            <if test="status != null" >
+                STATUS = #{status, jdbcType=VARCHAR},
+            </if>
+            MODIFIER = #{modifier, jdbcType=VARCHAR},
+            MODIFIED_TIME = sysdate()
+        </set>
+        <where >
+            ROLE_CODE IN (
+                SELECT * FROM (
+                select R.ROLE_CODE from hh_role R
+                where FIND_IN_SET(ROLE_CODE, getRoleChildLst(#{roleCode}))
+                ) TMP
+            )
+        </where>
+    </update>
+  <!--   根据角色编码  查询其所有的祖先   Oracle写法-->
+  <!--<select id="getRoleSetByRoleCode" resultMap="BaseResultMap">
+    SELECT <include refid="BaseColumnList" />
+    FROM hh_role U
+	START WITH U.ROLE_CODE =  #{roleCode,jdbcType=VARCHAR}
+	CONNECT BY PRIOR U.PARENT_ROLE_CODE = U.ROLE_CODE
+    ORDER BY U.ROLE_ORDER ASC 		
+  </select>-->
+    <!--   根据角色编码  查询其所有的祖先-->
+    <select id="getRoleSetByRoleCode" resultMap="BaseResultMap">
+        SELECT <include refid="BaseColumnList" />
+        FROM hh_role U
+        WHERE FIND_IN_SET(role_code, queryAncestors(#{roleCode}));
+    </select>
+  <!--   根据用户查询其拥有的角色   包括其所有的后代角色 Oracle写法-->
+  <!--<select id="getRoleSetByUser" resultMap="BaseResultMap">
+    SELECT <include refid="BaseColumnList" />
+    FROM hh_role U
+	START WITH U.ROLE_CODE IN (
+    	SELECT RU.ROLE_CODE FROM hh_role_user RU
+	    WHERE RU.USER_PHONE = #{userPhone, jdbcType=VARCHAR}
+	    AND RU.STATUS = '1'
+	)
+	CONNECT BY PRIOR U.ROLE_CODE = U.PARENT_ROLE_CODE
+    ORDER BY U.STATUS ASC, U.ROLE_ORDER ASC 		
+  </select>-->
+    <!--   根据用户查询其拥有的角色编码   代替上面的功能拆分1/2-->
+    <select id="getRoleCodeByUser" resultType="String">
+        SELECT RU.ROLE_CODE FROM hh_role_user RU
+        WHERE RU.USER_PHONE = #{userPhone, jdbcType=VARCHAR}
+              AND RU.STATUS = '1'
+    </select>
+    <!--   根据角色编码查询其所有的后代节点  代替上面的功能拆分2/2-->
+    <select id="getChildrensRoleByRoleCode"  resultMap="BaseResultMap">
+        select <include refid="BaseColumnList"/>
+        from hh_role U
+        where FIND_IN_SET(ROLE_CODE, getRoleChildLst(#{roleCode}))
+    </select>
+</mapper>

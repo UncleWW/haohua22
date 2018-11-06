@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hh.improve.dao.ICustomerDao" >
+  <resultMap id="BaseResultMap" type="com.hh.improve.entity.Customer" >
+    <result column="customer_Id" property="customerId" jdbcType="VARCHAR" />
+    <result column="customer_Name" property="customerName" jdbcType="VARCHAR" />
+    <result column="customer_Phone" property="customerPhone" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    C.customer_Id, C.customer_Name, C.customer_Phone,  C.address,
+    C.remark,C.creater, C.created_time, C.modifier, C.modified_time
+  </sql>
+
+    <select id="queryByCondition" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM hh_customer C
+        <where>
+            <if test="customerId != null and customerId !=''">
+                AND C.customer_Id = #{customerId, jdbcType = VARCHAR}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                AND C.customer_Name like "%"#{customerName}"%"
+            </if>
+            <if test="customerPhone != null and customerPhone != ''">
+                AND C.customer_Phone = #{customerPhone, jdbcType = VARCHAR}
+            </if>
+        </where>
+        ORDER BY C.modified_time DESC ,C.created_time DESC
+    </select>
+
+    <select id="query" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM hh_customer C
+        <where>
+            <if test="customerId != null and customerId !=''">
+                AND C.customer_Id = #{customerId, jdbcType = VARCHAR}
+            </if>
+            <if test="customerName != null and customerName != ''">
+                AND C.customer_Name like "%"#{customerName}"%"
+            </if>
+            <if test="customerPhone != null and customerPhone != ''">
+                AND C.customer_Phone like "%"#{customerPhone}"%"
+            </if>
+        </where>
+        ORDER BY C.modified_time DESC ,C.created_time DESC
+    </select>
+
+    <insert id="insert" parameterType="com.hh.improve.entity.Customer">
+        INSERT INTO hh_customer
+        (
+        customer_Id,
+        customer_Name,
+        customer_Phone,
+        address,
+        remark,
+        creater,
+        modifier,
+        created_time,
+        modified_time)
+        VALUES(
+        #{customerId,jdbcType=VARCHAR},
+        #{customerName,jdbcType=VARCHAR},
+        #{customerPhone,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{creater,jdbcType=VARCHAR},
+        #{modifier,jdbcType=VARCHAR},
+        sysdate(),
+        sysdate())
+    </insert>
+
+    <update id="update" parameterType="com.hh.improve.entity.Customer">
+        UPDATE hh_customer
+        <set >
+            <if test="customerName != null" >
+                customer_Name = #{customerName,jdbcType=VARCHAR},
+            </if>
+            <if test="customerPhone != null" >
+                customer_Phone = #{customerPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null" >
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="modifier != null" >
+                modifier = #{modifier,jdbcType=VARCHAR},
+            </if>
+            MODIFIED_TIME = sysdate()
+        </set>
+        <where >
+            customer_Id = #{customerId, jdbcType=VARCHAR}
+        </where>
+    </update>
+</mapper>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorator="layouts/layout-error">
+<head>
+  <title>Error</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+</head>
+<body>
+  <div layout:fragment="content" style="">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="form-group">
+          <form id="formSearch" onsubmit="return false" class="form-horizontal">
+            <div class="col-sm-12 form-group-line error">
+               <span th:text="${errorMsg}">未知异常！</span>
+            </div>
+            <div class="col-sm-12 form-group-line" style="text-align: right; color: blue;">
+              <a th:href="@{/}"><span>[返回系统首页]</span></a>
+            </div>
+            <div class="col-sm-12 form-group-line" style="text-align: right; color: blue;">
+              <a th:href="@{/logout}"><span>[换个用户登录]</span></a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

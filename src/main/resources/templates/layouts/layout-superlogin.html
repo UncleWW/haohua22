@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" >
+<head th:replace="fragments/fragment-common :: header(~{this :: title}, ~{this :: .custom-link})">
+  <title layout:title-pattern="$LAYOUT_TITLE - $CONTENT_TITLE">Interface Manager - SuperLogin</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <!-- Custom links for this page only -->
+  <link class="custom-link" rel="stylesheet" media="screen" />
+</head>
+<body>
+  <div id="wrapper">
+    <div class="login-main">
+      <!-- MAIN CONTENT -->
+      <div class="main-content">
+          <div layout:fragment="content"></div>
+      </div>
+    </div>
+    
+    <div class="clearfix"></div>
+    <div th:replace="fragments/fragment-common :: footer">&copy; 2017 The Static Footer In Layout</div>
+  </div>
+  <!-- script -->
+  <div th:replace="fragments/fragment-common :: scripts(~{this :: .custom-script})">
+    <script class="custom-script" src="../../static/js/superlogin.js" th:src="@{/js/superlogin.js}"></script>
+  </div>
+</body>
+</html>

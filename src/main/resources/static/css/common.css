@@ -1,0 +1,196 @@
+/* All styles created for demo purposes only, you may not need this for your project */
+.demo-button button {
+  margin-bottom: 5px; }
+
+.demo-icons li {
+  margin-bottom: 50px;
+  text-align: center; }
+
+
+
+.demo-icons .lnr,
+.demo-icons .fa {
+  font-size: 28px; }
+
+.demo-icons .cssclass {
+  display: block;
+  margin-top: 5px;
+  margin-left: 5px; }
+
+/*# sourceMappingURL=demo.css.map */
+/*# Ȩ�޹���ģ������� */
+.scrollDefineByWW{
+	border:1px solid #CDC5BF; 
+	position:absolute; 
+	height:78%; 
+	width:78%;  
+	overflow-y:auto;
+}
+.scrollDefineByWWNoBorder{
+	position:absolute; 
+	height:78%; 
+	width:78%;  
+	overflow-y:auto;
+}
+/*# ��ɫ����ģ�鲼�� */
+ .removeGap{
+ margin-left:-15px;
+ }
+ .labelform{
+ margin-top:5px;
+ margin-left:7px;
+ padding:0;
+ }
+ .firstlabelform{
+ margin-top:5px;
+ margin-left:0px;
+ padding:0;
+ }
+ .divGap{
+ margin-left:-7px;
+ padding:0;
+ }
+ .buttonWamg{
+ margin-top:10px;
+ margin-right:-10px;
+ }
+ .leftWW{
+ text-align:left;
+ margin-left:30px
+ }
+ .resourceButtonDivStyle{
+ padding-right:3px;
+ padding-left:3px
+ }
+  .hiddenDiv{
+  display:none
+ }
+  .tableSize{
+ height: 390px; 
+ padding-bottom: 40px
+ }
+  .buttonGap{
+ margin-right:10px
+ }
+  .divBorder{
+ overflow-y:auto;
+ margin-top:10px;
+ width:100%;
+ height:80px;
+ border:1px solid #cecece
+ }
+ .divflag{
+ margin-left:-30px
+ }
+ .buttonColorforCancel{
+ background-color:#DDD
+ }
+ .tooltip-red {
+  background-color:  #0b090a;
+ 
+ }
+ .tooltip.top .tooltip-asd {
+    bottom: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px 5px 0;
+    border-top-color: #0b090a;
+     filter:alpha(opacity=80);
+    -moz-opacity:0.7;
+    opacity:0.7;
+}
+.tooltip-asd {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+}
+.tooltip-inner {
+    max-width: 2000px;
+    padding: 3px 8px;
+    color: #fff;
+    text-align: center;
+    background-color: #0b090a;
+    border-radius: 4px;
+    filter:alpha(opacity=80);
+    -moz-opacity:0.7;
+    opacity:0.7;
+}
+.remarkStyle{
+	text-indent:2em;
+	margin-left:15px;
+	font-weight:normal
+}
+.left15{
+	margin-left:15px
+}
+.fontNormal{
+	font-weight:normal
+}
+.labelMoveToRigt{
+	padding-right: 0px;
+}
+.nodeMoveToLeft{
+	padding-left: 0px;
+}
+.rowMoveToLeft{
+	margin-left: -20px;
+}
+.starPosition{
+	padding-left: 88px
+}
+.labelPosition{
+	/*margin-left:-79px*/
+}
+.inputPosition{
+	width:116%;
+	margin-left:-2px
+}
+.tablePosition{
+	margin-top: -40px;
+}
+.detailShow{
+	padding-bottom:1px;
+	padding-left:6px;
+	padding-right:6px;
+	border-bottom:1px solid #999
+} 
+.fontOutParam{
+	font-family:Times;
+	background-color��#000000;
+	width: 100%;  
+    height: auto;  
+    word-wrap:break-word;  
+    word-break:break-all ;
+    overflow: hidden
+}
+.fontOutParamExExample{
+	font-family:Times
+}
+.resourceButtonDivStyle .form-control[disabled]{
+  background-color: #00AAFF;
+  opacity: 0.4;
+}
+.modal-footer .btn-primary[disabled]
+{
+  background-color: #e7e7e7;
+  opacity: 0.4;
+}
+.mask {
+  filter:Alpha(opacity=30);
+  -moz-opacity:0.3;
+  -khtml-opacity:0.3;
+  opacity:0.3;
+  background-color:#000;
+  width:100%;
+  height:100%;
+  z-index:1200;
+  position:fixed;
+  left:0;
+  top:0;
+  right:0;
+  bottom:0;
+  display:none;
+  overflow:hidden;
+}
