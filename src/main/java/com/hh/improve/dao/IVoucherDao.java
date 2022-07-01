@@ -4,6 +4,7 @@ package com.hh.improve.dao;
 import com.hh.improve.entity.Voucher;
 import com.hh.improve.entity.vo.VoucherVo;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -27,5 +28,12 @@ public interface IVoucherDao extends IBaseDao<Voucher> {
      * @return
      */
     List<VoucherVo> queryVoucherSonListPage(Map<String, Object> condition);
+
+    /**
+     * 根据 客户Id 统计销售总金额
+     * @param customerId
+     * @return
+     */
+    BigDecimal countAmountByCustomerId(String customerId);
 
 }

@@ -4,6 +4,7 @@ import com.hh.improve.entity.Voucher;
 import com.hh.improve.entity.vo.VoucherSearch;
 import com.hh.improve.entity.vo.VoucherVo;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface IVoucherService extends IBaseService<Voucher>{
@@ -31,7 +32,6 @@ public interface IVoucherService extends IBaseService<Voucher>{
 	 * @return
 	 */
 	VoucherVo queryVoucherById(String voucherId);
-
 	/**
 	 *根据voucherId查询其前面一个后面一个凭证
 	 * 0向前  1向后
@@ -58,4 +58,12 @@ public interface IVoucherService extends IBaseService<Voucher>{
 	 * @return
 	 */
 	List<VoucherVo> queryVoucherSonListPage(VoucherSearch voucherSearch, int offset, int limit);
+
+	/**
+	 * 根据客户 customerId 查询该客户的累计欠款
+	 * @param customerId
+	 * @return
+	 */
+	BigDecimal queryAccumulateDebtById(String customerId);
+
 }
