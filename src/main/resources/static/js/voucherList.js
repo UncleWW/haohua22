@@ -22,7 +22,8 @@ $(document).ready(function() {
         todayHighlight: 1,
         startView: 2,
         forceParse: 0,
-        orientation:"left"
+        format:'yyyy-mm-dd',
+        orientation:"bottom-left"
         /*showMeridian: 1*/
     });
 });
@@ -51,13 +52,13 @@ var TableInit = function() {
             paginationLoop: false,
             //search : true, // 是否显示表格搜索，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
             //strictSearch : true,
-            showColumns : true, // 是否显示所有的列
+            //showColumns : true, // 是否显示所有的列
             //showRefresh : true, // 是否显示刷新按钮
             //minimumCountColumns : 2, // 最少允许的列数
             clickToSelect : true, // 是否启用点击选中行
             // height : 500, //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
             uniqueId : "customerName", // 每一行的唯一标识，一般为主键列
-            showToggle : true, // 是否显示详细视图和列表视图的切换按钮
+            showToggle : false, // 是否显示详细视图和列表视图的切换按钮
             cardView : false, // 是否显示详细视图
             //checkboxHeader: true,
             detailView : true, // 是否显示父子表
@@ -79,18 +80,6 @@ var TableInit = function() {
                 align: 'right',
                 formatter:function(value){ return formatMoney(value);}
             },{
-                field : 'payAmount',
-                title : '付款（元）',
-                halign: 'center',
-                align: 'right',
-                formatter:function(value){ return formatMoney(value);}
-            },{
-                field : 'debtAmount',
-                title : '欠款（元）',
-                halign: 'center',
-                align: 'right',
-                formatter:function(value){ return dealRedColor(formatMoney(value));}
-            },{
                 field : 'voucherNnm',
                 title : '数量（单）',
                 halign: 'center',
@@ -100,11 +89,9 @@ var TableInit = function() {
             onLoadSuccess: function (data) {
                 //var address=$("#txt_search_interfaceAddress").val();
                 var customerName =$("#txt_search_customerName").val();
-                var debtIf = $("#txt_search_debt").val();
                 var voucherDate_begin = $("#search_start_time").val();
                 var voucherDate_end = $("#search_end_time").val();
-                if((customerName != "" && customerName !=null)  || (debtIf != "" && debtIf !=null)
-                   || (voucherDate_begin != "" && voucherDate_begin !=null)  || (voucherDate_end != "" && voucherDate_end !=null)){
+                if((customerName != "" && customerName !=null) || (voucherDate_begin != "" && voucherDate_begin !=null)  || (voucherDate_end != "" && voucherDate_end !=null)){
                     for(var i=0;i<data.rows.length;i++){
                         $('#tb_voucher').bootstrapTable('expandRow', i);
                     }
@@ -126,7 +113,6 @@ var TableInit = function() {
             limit: params.limit, // 页面大小
             offset: params.offset, // 页码
             customerName: $("#txt_search_customerName").val(),
-            debtIf: $("#txt_search_debt").val(),
             voucherDate_begin : $("#search_start_time").val(),//startTime
             voucherDate_end: $("#search_end_time").val()//endTime
 
@@ -143,7 +129,6 @@ var TableInit = function() {
                 voucherId: $("#txt_search_voucherId").val(),
                 customerId: row.customerId,
                 customerName: $("#txt_search_customerName").val(),
-                debtIf: $("#txt_search_debt").val(),
                 voucherDate_begin : $("#search_start_time").val(),//startTime
                 voucherDate_end: $("#search_end_time").val()//endTime
             };
@@ -180,6 +165,10 @@ var TableInit = function() {
             cardView : false, // 是否显示详细视图
             //checkboxHeader: true,
             detailView : false, // 是否显示父子表
+            rowStyle: function (row, index) {
+                //这里有5个取值代表5中颜色['active', 'success', 'info', 'warning', 'danger'];
+                return { classes: "warning" }
+            },
             columns : [ {
                 field : 'index',
                 title : '序号',
@@ -204,18 +193,6 @@ var TableInit = function() {
                 halign: 'center',
                 align: 'right',
                 formatter:function(value){ return formatMoney(value);}
-            },{
-                field : 'payAmount',
-                title : '付款（元）',
-                halign: 'center',
-                align: 'right',
-                formatter:function(value){ return formatMoney(value);}
-            },{
-                field : 'debtAmount',
-                title : '欠款（元）',
-                halign: 'center',
-                align: 'right',
-                formatter:function(value){ return dealRedColor(formatMoney(value));}
             },{
                 field : 'voucherDate',
                 title : '发票日期',
@@ -267,12 +244,6 @@ var ButtonInit = function() {
     var oInit = new Object();
 
     oInit.Init = function() {
-        $('#txt_search_debt').select2( {
-            multiple: false,
-            minimumResultsForSearch: -1,
-            containerCssClass: 'form-control',
-            data: [{id: '', text: '不限'},{id: '1', text: '有欠款'},{id: '0', text: '已结清'}]
-        });
         //初始化页面上面的按钮事件
         $('#voucher-query-btn').click(function() {
             $('#tb_voucher').bootstrapTable('refresh');

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Controller
@@ -182,5 +183,27 @@ public class VoucherController extends BaseController {
 			errors = Arrays.asList(errorInfo);
 		}
 		return tranferBaseDTO(errors, customerList);
+	}
+
+	@ResponseBody
+	@RequestMapping("/queryAccumulateDebtById")
+	public BaseDTO queryAccumulateDebtById(String customerId) {
+		List<ErrorInfo> errors = new ArrayList<ErrorInfo>();
+		BigDecimal AccumulateDebt = new BigDecimal(0);
+		try {
+			if(StringUtils.isEmpty(customerId)){
+				ErrorInfo errorInfo = new ErrorInfo("客户id为空，无法查询累计欠款！");
+				errors = Arrays.asList(errorInfo);
+			}
+			if(errors.size()> 0) {
+				return tranferBaseDTO(errors, AccumulateDebt);
+			}
+			AccumulateDebt = voucherService.queryAccumulateDebtById(customerId);
+		} catch (Exception e) {
+			LOGGER.error("VoucherController.queryAccumulateDebtById Exception: ", e);
+			ErrorInfo errorInfo = new ErrorInfo("system.error", "系统异常！");
+			errors = Arrays.asList(errorInfo);
+		}
+		return tranferBaseDTO(errors, AccumulateDebt);
 	}
 }

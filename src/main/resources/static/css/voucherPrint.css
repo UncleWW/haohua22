@@ -7,11 +7,11 @@
 .voucher .total td:nth-child(1){text-align: center}
 .voucher td input{text-align: center}
 .voucher td:nth-child(1),.voucher th:nth-child(1){width:5%}
-.voucher td:nth-child(2),.voucher th:nth-child(2){width:15%}
+.voucher td:nth-child(2),.voucher th:nth-child(2){width:18%}
 .voucher td:nth-child(3),.voucher th:nth-child(3){width:13%}
 .voucher td:nth-child(4),.voucher th:nth-child(4){width:5%}
 .voucher td:nth-child(5),.voucher th:nth-child(5){width:5%}
-.voucher td:nth-child(6),.voucher th:nth-child(6){width:13%}
+.voucher td:nth-child(6),.voucher th:nth-child(6){width:10%}
 .voucher td:nth-child(7),.voucher th:nth-child(7){width:15%}
 .voucher td:nth-child(8),.voucher th:nth-child(7){width:19%}
 /*新增删除一行*/
@@ -62,9 +62,19 @@
 /*金钱样式*/
 .Arabia_to_Chinese{/*font-size:18px;*//*font-weight:bold*/}
 
-/*欠款  付款  制单人  的文字  */
-.voucher_pay span , .voucher_noPay span, .total .voucherMaker{
+/*欠款  制单人  的文字  */
+.voucher_noPay span, .total .voucherMaker{
     float: left;
+}
+/* 累计欠款  文字和金钱不换行*/
+.voucher_noPay span{
+    float: left;
+    width: 100%;
+    margin-top: 5px;
+}
+/*欠款固定万     仟     佰     拾     元  居中  */
+.voucher_noPay .emptymoney{
+    text-align: center
 }
 
 /*备注输入框样式*/

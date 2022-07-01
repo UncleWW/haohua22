@@ -9,7 +9,6 @@ public class VoucherSearch extends BaseEntity {
 	private String voucherDate_begin;//发票日期YYYY-MM-DD
 	private String voucherDate_end;//发票日期YYYY-MM-DD
 	private String voucherMaker;//制单人
-	private String debtIf;//是否有欠款  0没有   1有
 	private String companyAccount;//公司账套
 
 	public String getCompanyAccount() {
@@ -18,13 +17,6 @@ public class VoucherSearch extends BaseEntity {
 
 	public void setCompanyAccount(String companyAccount) {
 		this.companyAccount = companyAccount;
-	}
-	public String getDebtIf() {
-		return debtIf;
-	}
-
-	public void setDebtIf(String debtIf) {
-		this.debtIf = debtIf;
 	}
 
 	public String getVoucherId() {

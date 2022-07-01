@@ -65,7 +65,7 @@
                 AND U.sex = #{sex, jdbcType = VARCHAR}
             </if>
             <if test="status!= null and status != ''">
-                AND U.status = #{deptname, jdbcType = VARCHAR}
+                AND U.status = #{status, jdbcType = VARCHAR}
             </if>
         </where>
     </select>

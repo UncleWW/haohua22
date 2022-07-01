@@ -2,6 +2,7 @@ package com.hh.improve.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.hh.improve.dao.IBaseDao;
+import com.hh.improve.dao.IPaymentHistoryDao;
 import com.hh.improve.dao.IVoucherDao;
 import com.hh.improve.dao.IVoucherSonDao;
 import com.hh.improve.entity.Voucher;
@@ -31,6 +32,9 @@ public class VoucherServiceImpl extends BaseServiceImpl<Voucher> implements IVou
 
 	@Autowired
 	private IVoucherSonDao voucherSonDao;
+
+	@Autowired
+	private IPaymentHistoryDao paymentHistoryDao;
 
 	@Override
 	protected IBaseDao<Voucher> getBaseDao() {
@@ -133,7 +137,7 @@ public class VoucherServiceImpl extends BaseServiceImpl<Voucher> implements IVou
 		voucherVo.setSonList(voucherSons);
 		return voucherVo;
 	}
-//一下方法都是VoucherListController的方法-----------------------------------------------
+
 	@Override
 	public List<VoucherVo> queryVoucherListPage(VoucherSearch voucherSearch, int offset, int limit){
 		PageHelper.offsetPage(offset, limit);
@@ -142,7 +146,6 @@ public class VoucherServiceImpl extends BaseServiceImpl<Voucher> implements IVou
 		condition.put("customerName", voucherSearch.getCustomerName());
 		condition.put("voucherDate_begin", voucherSearch.getVoucherDate_begin());
 		condition.put("voucherDate_end", voucherSearch.getVoucherDate_end());
-		condition.put("debtIf", voucherSearch.getDebtIf());
 		return voucherDao.queryVoucherListPage(condition);
 	}
 
@@ -156,7 +159,23 @@ public class VoucherServiceImpl extends BaseServiceImpl<Voucher> implements IVou
 		condition.put("customerId", voucherSearch.getCustomerId());
 		condition.put("voucherDate_begin", voucherSearch.getVoucherDate_begin());
 		condition.put("voucherDate_end", voucherSearch.getVoucherDate_end());
-		condition.put("debtIf", voucherSearch.getDebtIf());
 		return voucherDao.queryVoucherSonListPage(condition);
 	}
+
+	@Override
+	public BigDecimal queryAccumulateDebtById(String customerId){
+		//根据 customerId 统计所有的销售额
+		BigDecimal accumulateAmount = voucherDao.countAmountByCustomerId(customerId);
+		if(accumulateAmount==null){
+			accumulateAmount = new BigDecimal(0);
+		}
+		//根据 customerId 统计所有的收款总额
+		BigDecimal accumulatePay =  paymentHistoryDao.countPayHistoryByCustomerId(customerId);
+		if(accumulatePay==null){
+			accumulatePay = new BigDecimal(0);
+		}
+		BigDecimal accumulateDebt = accumulateAmount.subtract(accumulatePay);
+		return accumulateDebt;
+	}
+
 }

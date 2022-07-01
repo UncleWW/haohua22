@@ -68,18 +68,19 @@
 /*金钱样式*/
 .Arabia_to_Chinese{font-size:18px;font-weight:bold}
 
-/*欠款  付款  制单人  的文字和input显示在同一行  */
-.voucher_pay span , .voucher_noPay span{
+/*付款的文字和input显示在同一行  */
+.voucher_noPay span{
     float: left;
-    width: 24%;
+    width: 38%;
     margin-top: 5px;
     display: inline-block;
 }
-.voucher_pay .money , .voucher_noPay .money{
+.voucher_noPay .money{
     float: left;
-    width: 73%;
+    width: 59%;
     display: inline-block;
 }
+
 .total .voucherMaker{
     float: left;
     width: 38%;

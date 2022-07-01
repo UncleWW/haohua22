@@ -1,0 +1,9 @@
+@charset "utf-8";
+
+/*菜单栏样式*/
+#formSearch .col-sm-1{
+    width: 9%;
+}
+#formSearch .col-sm-2{
+    width: 17%;
+}

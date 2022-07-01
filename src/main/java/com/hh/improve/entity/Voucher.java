@@ -6,8 +6,6 @@ public class Voucher extends BaseEntity{
 	private String voucherId;//主键——凭证编号八位顺序字符串[00000000]
 	private String customerId;//客户唯一主键
 	private BigDecimal amount;//此凭证全部商品总价
-	private BigDecimal payAmount;//此凭证全部商品总价
-	private BigDecimal debtAmount;//此凭证全部商品总价
 	private String voucherDate;//发票日期YYYY-MM-DD
 	private String voucherMaker;//制单人
 	private String remark;//备注信息
@@ -35,22 +33,6 @@ public class Voucher extends BaseEntity{
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
-	}
-
-	public BigDecimal getPayAmount() {
-		return payAmount;
-	}
-
-	public void setPayAmount(BigDecimal payAmount) {
-		this.payAmount = payAmount;
-	}
-
-	public BigDecimal getDebtAmount() {
-		return debtAmount;
-	}
-
-	public void setDebtAmount(BigDecimal debtAmount) {
-		this.debtAmount = debtAmount;
 	}
 
 	public String getVoucherDate() {

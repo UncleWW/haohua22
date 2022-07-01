@@ -11,8 +11,23 @@ $(document).ready(function() {
 
 
     //默认查询展示最近一张凭证
-    queryLastVoucher()
-})
+    queryLastVoucher();
+
+    //查询累计欠款金额
+    initAccumulateDebt();
+});
+
+function initAccumulateDebt(){
+    var customerId = $(".voucher_title_div #customerSelect").val();
+    var accumulateDebt = resultAjax("/voucher/queryAccumulateDebtById", {customerId:customerId});
+    $("#debtMoney").attr("value",formatMoney(accumulateDebt));
+    $("#debtMoney").val(formatMoney(accumulateDebt));
+    //金钱转中文  欠款
+    var debtChinese = Arabia_to_Chinese(accumulateDebt);
+    $("#debtChinese").attr("value",debtChinese);
+    $("#debtChinese").val(debtChinese);
+}
+
 //查询按钮
 $("#search_voucher").click(function(){
     queryVoucherById();
@@ -75,6 +90,9 @@ $(".voucher_title_div #customerSelect").change(function(){
     $(".voucher_title_div #customerSelect").attr("value",value);
     $("#customerSelect option").attr("checked",false)
     $("#customerSelect option[value='"+value+"']").attr("checked",true)
+
+    //查询累计欠款金额
+    initAccumulateDebt();
 });
 
 //凭证赋值初始化
@@ -85,8 +103,6 @@ function initVoucher(voucherVo){
     $(".voucher_title_div #customerSelect").attr("value",voucherVo.customerId);
     $("#customerSelect option[value='"+voucherVo.customerId+"']").attr("checked",true);
     //付款   欠款 制单人 备注  初始化
-    $("#payMoney").val(formatMoney( voucherVo.payAmount) );
-    $("#debtMoney").val(voucherVo.debtAmount);
     $("#voucherMaker").val(voucherVo.voucherMaker);
     $("#remarkTextarea").val(voucherVo.remark);
 
@@ -101,10 +117,10 @@ function initVoucher(voucherVo){
         $("#tb_voucher .voucher_row").eq(i).find('input').eq(1).val(sons[i].goodsName);
         $("#tb_voucher .voucher_row").eq(i).find('input').eq(2).attr("value",sons[i].goodsFormat);
         $("#tb_voucher .voucher_row").eq(i).find('input').eq(2).val(sons[i].goodsFormat);
-        $("#tb_voucher .voucher_row").eq(i).find('input').eq(3).attr("value",sons[i].goodsNumber);
-        $("#tb_voucher .voucher_row").eq(i).find('input').eq(3).val(sons[i].goodsNumber);
-        $("#tb_voucher .voucher_row").eq(i).find('input').eq(4).attr("value",sons[i].goodsUnit);
-        $("#tb_voucher .voucher_row").eq(i).find('input').eq(4).val(sons[i].goodsUnit);
+        $("#tb_voucher .voucher_row").eq(i).find('input').eq(3).attr("value",sons[i].goodsUnit);
+        $("#tb_voucher .voucher_row").eq(i).find('input').eq(3).val(sons[i].goodsUnit);
+        $("#tb_voucher .voucher_row").eq(i).find('input').eq(4).attr("value",sons[i].goodsNumber);
+        $("#tb_voucher .voucher_row").eq(i).find('input').eq(4).val(sons[i].goodsNumber);
         $("#tb_voucher .voucher_row").eq(i).find('input').eq(5).attr("value",sons[i].unitPrice).blur();
         $("#tb_voucher .voucher_row").eq(i).find('input').eq(5).val(sons[i].unitPrice).blur();
         $("#tb_voucher .voucher_row").eq(i).find('input').eq(6).attr("value",sons[i].totalPrice);
@@ -112,6 +128,9 @@ function initVoucher(voucherVo){
         $("#tb_voucher .voucher_row").eq(i).find('input').eq(7).attr("value",sons[i].remark);
         $("#tb_voucher .voucher_row").eq(i).find('input').eq(7).val(sons[i].remark);
     }
+
+    //查询累计欠款金额
+    initAccumulateDebt();
 }
 
 //点击新增按钮 --- 新增凭证
@@ -124,6 +143,8 @@ $("#add_voucher").on("click",function(){
     initRows(5);
     //序号
     resetNum();
+    //查询累计欠款金额
+    initAccumulateDebt();
 });
 //清空之前的赋值效果
 function addNewVoucher(){
@@ -143,8 +164,8 @@ $("#save_voucher").on("click",function(){
         var voucherDate = $(".voucher_title_div .invoiceDate").find('span').eq(0).html();
         var customerId = $(".voucher_title_div #customerSelect").val();
         var amount = ($("#totalAmount").val()+"").split(",").join("");
-        var payAmount = ($("#payMoney").val()+"").split(",").join("");
-        var debtAmount = ($("#debtMoney").val()+"").split(",").join("");
+        //var payAmount = ($("#payMoney").val()+"").split(",").join("");
+        //var debtAmount = ($("#debtMoney").val()+"").split(",").join("");
         var voucherMaker = $("#voucherMaker").val();
         var remark = $("#remarkTextarea").val();
         if(!isNotNull(customerId)){
@@ -156,8 +177,8 @@ $("#save_voucher").on("click",function(){
         voucherVo.voucherDate = voucherDate;
         voucherVo.customerId = customerId;
         voucherVo.amount = amount;
-        voucherVo.payAmount = payAmount;
-        voucherVo.debtAmount = debtAmount;
+        //voucherVo.payAmount = payAmount;
+        //voucherVo.debtAmount = debtAmount;
         voucherVo.voucherMaker = voucherMaker;
         voucherVo.remark = remark;
         var voucherSons=new Array();
@@ -167,8 +188,8 @@ $("#save_voucher").on("click",function(){
             son.goodsId = $(trRow).find('input').eq(0).val();
             son.goodsName = $(trRow).find('input').eq(1).val();
             son.goodsFormat = $(trRow).find('input').eq(2).val();
-            son.goodsNumber = $(trRow).find('input').eq(3).val();
-            son.goodsUnit = $(trRow).find('input').eq(4).val();
+            son.goodsUnit = $(trRow).find('input').eq(3).val();
+            son.goodsNumber = $(trRow).find('input').eq(4).val();
             son.remark = $(trRow).find('input').eq(7).val();
             if(isNotNull(son.goodsName)){
                 var unitPrice = $(trRow).find('input').eq(5).val();
@@ -267,7 +288,7 @@ function changeValue(d){
         $("#totalAmount").attr("value",formatMoney(totalAmount));
         $("#totalAmount").val(formatMoney(totalAmount));
         //计算总金额   付款   欠款  数额
-        dealPayDebat();
+        //dealPayDebat();
         //钱转汉字
         var chinese = Arabia_to_Chinese(totalAmount);
         $("#totalChinese").attr("value",chinese);
@@ -276,13 +297,13 @@ function changeValue(d){
 };
 
 //把欠款  和 付款单元格的输入格式处理成逗号形式
-function changePay(d){
+/*function changePay(d){
     var value = $(d).val();
     dealValueToShow(value,d);
     dealPayDebat();
-}
+}*/
 //计算总额   付款  欠款 之间的关系
-function dealPayDebat(){
+/*function dealPayDebat(){
     var totalAmount = $("#totalAmount").val().split(",").join("");
     var payMoney = $("#payMoney").val().split(",").join("");
     var debtMoey = parseFloat(totalAmount-payMoney);
@@ -296,7 +317,7 @@ function dealPayDebat(){
     $("#debtChinese").attr("value",debtChinese);
     $("#debtChinese").val(debtChinese);
 
-}
+}*/
 //把用户输入或者赋值的  转换成逗号的显示状态显示
 function dealValueToShow(value,d){
     value = value + "";
@@ -333,7 +354,7 @@ function dealGoodNum(value,d){
 //横向计算（数量*单价）
 function caculateX(d){
     var tr = $(d).parent().parent();
-    var goodsNumber = $(tr).find('input').eq(3).val();
+    var goodsNumber = $(tr).find('input').eq(4).val();
     var unitPrice = $(tr).find('input').eq(5).val();
     var totalPrice = "0";
     if( isNotNull(unitPrice)){
@@ -344,9 +365,13 @@ function caculateX(d){
     }
 
 }
-
 //打印
-$("#print_voucher").on("click",function(){
+$("#print_voucher").on("click",function() {
+   // selectAlert("是否打印欠款和收款", "打印", "不打印", function () {beforePrintDeaal(true)}, function () {beforePrintDeaal(false);});
+    beforePrintDeaal();
+});
+//打印
+function beforePrintDeaal(){
     //打印之后需要刷新页面，记录当前的凭证号
     var voucherId = $(".voucher_title_div .invoiceCode").find('span').eq(0).html();
     //打印时把客户名称下拉框换成span标签
@@ -363,12 +388,12 @@ $("#print_voucher").on("click",function(){
     $(".total .voucherMaker").html("制单人："+voucherMaker);
     $(".total #voucherMaker").remove();
 
-    var voucher_pay = $(".voucher_pay #payMoney").val();
+   /* var voucher_pay = $(".voucher_pay #payMoney").val();
     $(".voucher_pay span").html("收款："+voucher_pay);
-    $(".voucher_pay #payMoney").remove();
+    $(".voucher_pay #payMoney").remove();*/
 
     var voucher_noPay = $(".voucher_noPay #debtMoney").val();
-    $(".voucher_noPay span").html("欠款："+voucher_noPay);
+    $(".voucher_noPay span").html("累计欠款："+voucher_noPay);
     $(".voucher_noPay #debtMoney").remove();
 
     //备注
@@ -379,11 +404,18 @@ $("#print_voucher").on("click",function(){
     var textArea = document.getElementById("remarkTextarea");
     textArea.parentNode.replaceChild(p,textArea);
     //打印
+   /* if(!flag){
+        var foramrtChinese = "<p class='emptymoney'>万&nbsp;&nbsp;&nbsp;仟&nbsp;&nbsp;&nbsp;佰&nbsp;&nbsp;&nbsp;拾&nbsp;&nbsp;&nbsp;元</p>"
+        $(".voucher_pay span").html("收款：");
+        $("#payChinese").replaceWith(foramrtChinese);
+        $(".voucher_noPay span").html("累计欠款：");
+        $("#debtChinese").replaceWith(foramrtChinese);
+    }*/
     var html = $("#printArea").html();
     printHtml(html);
     //刷新页面
     window.location.href="/voucher?voucherId="+voucherId;
-});
+};
 
 function printHtml(html) {
     document.body.innerHTML = html;
