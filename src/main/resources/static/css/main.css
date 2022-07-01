@@ -139,7 +139,7 @@ footer {
     display: none; } }
 
 .main .main-content {
-  padding: 22px 10px; }
+  padding: 15px 10px; }
   
 .navbar + .main-content {
   padding: 105px 0 28px 5px; }
@@ -1077,7 +1077,6 @@ ul.activity-list > li {
     width: 58%;
     height: 100%;
     position: relative;
-    background-image: url("../../assets/img/login-bg.jpg");
     background-repeat: no-repeat;
     background-size: cover; }
     .auth-box .right:before {
@@ -1235,7 +1234,6 @@ ul.activity-list > li {
   .profile-header .profile-main {
     position: relative;
     padding: 20px;
-    background-image: url("../../assets/img/profile-bg.png");
     background-repeat: no-repeat;
     background-size: cover; }
   .profile-header .name {
@@ -1894,13 +1892,13 @@ ul.activity-timeline > li {
  .btn-whiteList button {
  	margin-right:15px;
  }
-.baseInfo, .baseInfo:hover, .baseInfo:focus {
+.voucherListManager, .voucherListManager:hover, .voucherListManager:focus {
 	background-color:#28B779;
 }
-.authManager, .authManager:hover, .authManager:focus {
+.voucherManager, .voucherManager:hover, .voucherManager:focus {
 	background-color:#27A9E3;
 }
-.projManager, .projManager:hover, .projManager:focus {
+.paymentHistoryManager, .paymentHistoryManager:hover, .paymentHistoryManager:focus {
 	background-color:#DA552A
 }
 .moniManager, .moniManager:hover, .moniManager:focus {
