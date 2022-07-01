@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hh.improve.dao.IReportVoucherDao" >
+ <!-- <resultMap id="BaseResultMap" type="com.hh.improve.entity.Voucher" >
+    <result column="voucher_Id" property="voucherId" jdbcType="VARCHAR" />
+    <result column="customer_Id" property="customerId" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="pay_Amount" property="payAmount" jdbcType="DECIMAL" />
+    <result column="debt_Amount" property="debtAmount" jdbcType="DECIMAL" />
+    <result column="voucher_Date" property="voucherDate" jdbcType="VARCHAR" />
+    <result column="voucher_Maker" property="voucherMaker" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+  </resultMap>-->
+
+ <!-- <sql id="Base_Column_List" >
+    V.voucher_Id, V.customer_Id, V.amount, V.pay_Amount, V.debt_Amount,  V.voucher_Date, V.voucher_Maker,
+    V.remark, V.creater, V.created_time, V.modifier, V.modified_time
+  </sql>-->
+
+    <select id="getAllCustomer" resultType="java.lang.String">
+        SELECT (
+            SELECT customer_Name
+            FROM hh_customer c
+            WHERE c.customer_Id = v.customer_Id
+        ) customerName
+        FROM hh_voucher v
+        GROUP BY customer_Id
+        ORDER BY customer_Id
+    </select>
+
+    <select id="getAllMonths" resultType="java.lang.String">
+        SELECT substr(voucher_Date, 1, 7) voucherDate
+        FROM hh_voucher
+        GROUP BY substr(voucher_Date, 1, 7)
+        ORDER BY voucherDate
+    </select>
+
+  <select id="getReportVoucherVo" resultType="com.hh.improve.entity.vo.ReportVoucherVo">
+      SELECT
+          month.customerId,
+          month.voucherDate,
+          data.amount
+      FROM (
+          SELECT
+              substr(voucher_Date, 1, 7) voucherDate,
+              customer_Id                customerId,
+              SUM(amount)                amount
+          FROM hh_voucher
+          GROUP BY voucherDate, customer_Id
+      ) data
+      RIGHT JOIN
+      (
+          SELECT
+              c.customer_Id customerId,
+              d.voucherDate
+          FROM (
+                   SELECT customer_Id
+                   FROM hh_voucher
+                   GROUP BY customer_Id
+               ) c
+              INNER JOIN
+              (
+                  SELECT substr(voucher_Date, 1, 7) voucherDate
+                  FROM hh_voucher
+                  GROUP BY substr(voucher_Date, 1, 7)
+              ) d
+      ) month
+      ON data.voucherDate = month.voucherDate
+      AND data.customerId = month.customerId
+      ORDER BY month.customerId, month.voucherDate
+  </select>
+  <select id="getReportSaleGroupByMonth" resultType="com.hh.improve.entity.vo.ReportVoucherVo">
+        SELECT
+            substr(voucher_Date, 1, 7) voucherDate,
+            SUM(amount)                amount
+        FROM hh_voucher
+        GROUP BY voucherDate
+        ORDER BY voucherDate ASC
+  </select>
+
+
+</mapper>

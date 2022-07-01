@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hh.improve.dao.IPaymentHistoryDao" >
+  <resultMap id="BaseResultMap" type="com.hh.improve.entity.PaymentHistory" >
+    <result column="ph_Id" property="phId" jdbcType="VARCHAR" />
+    <result column="customer_Id" property="customerId" jdbcType="VARCHAR" />
+    <result column="pay_Amount" property="payAmount" jdbcType="DECIMAL" />
+    <result column="pay_Date" property="payDate" jdbcType="VARCHAR" />
+    <result column="payee" property="payee" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="creater" property="creater" jdbcType="VARCHAR" />
+    <result column="created_time" property="createdTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modified_time" property="modifiedTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    p.ph_Id, p.customer_Id, p.pay_Amount, p.pay_Date, p.payee, p.remark,
+    p.creater, p.created_time, p.modifier, p.modified_time
+  </sql>
+
+  <select id="countAllCustomerSaleMoneyPage" resultType="com.hh.improve.entity.vo.PaymentHistoryVo">
+    SELECT  V.customer_Id AS customerId,C.customer_Name AS customerName ,
+    SUM(V.amount) AS totalAmount
+    FROM hh_voucher V
+    LEFT JOIN hh_customer C ON V.customer_Id = C.customer_Id
+    <where>
+      <if test="customerName != null and customerName !=''">
+        AND C.customer_Name LIKE "%"#{customerName, jdbcType = VARCHAR}"%"
+      </if>
+      <if test="payDateBegin != null and payDateBegin !=''">
+        <![CDATA[ AND V.voucher_Date >= #{payDateBegin, jdbcType = VARCHAR} ]]>
+      </if>
+      <if test="payDateEnd != null and payDateEnd !=''">
+        <![CDATA[ AND V.voucher_Date <= #{payDateEnd, jdbcType = VARCHAR} ]]>
+      </if>
+    </where>
+    GROUP BY V.customer_Id
+    ORDER BY totalAmount DESC
+  </select>
+
+  <select id="getAllCustomer" resultType="com.hh.improve.entity.Customer">
+    SELECT  V.customer_Id AS customerId,C.customer_Name AS customerName
+    FROM hh_voucher V
+    LEFT JOIN hh_customer C ON V.customer_Id = C.customer_Id
+    GROUP BY V.customer_Id
+  </select>
+
+  <select id="countAllCustomerPayMoneyPage" resultType="com.hh.improve.entity.vo.PaymentHistoryVo">
+    SELECT  p.customer_Id AS customerId,
+    SUM(p.pay_Amount) AS totalPayAmount
+    FROM hh_paymenthistory p
+    <where>
+      <if test="payDateBegin != null and payDateBegin !=''">
+        <![CDATA[ AND p.pay_Date >= #{payDateBegin, jdbcType = VARCHAR} ]]>
+      </if>
+      <if test="payDateEnd != null and payDateEnd !=''">
+        <![CDATA[ AND p.pay_Date <= #{payDateEnd, jdbcType = VARCHAR} ]]>
+      </if>
+    </where>
+    GROUP BY p.customer_Id
+  </select>
+
+  <select id="queryPayHistoryByCustomerIdPage" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List"/>
+    FROM hh_paymenthistory p
+    <where>
+      <if test="customerId != null and customerId !=''">
+        AND p.customer_Id = #{customerId, jdbcType = VARCHAR}
+      </if>
+      <if test="payDateBegin != null and payDateBegin !=''">
+        <![CDATA[ AND p.pay_Date >= #{payDateBegin, jdbcType = VARCHAR} ]]>
+      </if>
+      <if test="payDateEnd != null and payDateEnd !=''">
+        <![CDATA[ AND p.pay_Date <= #{payDateEnd, jdbcType = VARCHAR} ]]>
+      </if>
+    </where>
+    ORDER BY  p.pay_Date DESC,p.created_time DESC, p.MODIFIED_TIME DESC
+  </select>
+
+
+  <insert id="insert" parameterType="com.hh.improve.entity.PaymentHistory">
+    INSERT INTO hh_paymenthistory
+    (
+      ph_Id,
+      customer_Id,
+      pay_Amount,
+      pay_Date,
+      payee,
+      remark,
+      creater,
+      created_time
+    )
+    VALUES(
+      #{phId,jdbcType=VARCHAR},
+      #{customerId,jdbcType=VARCHAR},
+      #{payAmount,jdbcType=VARCHAR},
+      #{payDate,jdbcType=VARCHAR},
+      #{payee,jdbcType=VARCHAR},
+      #{remark,jdbcType=VARCHAR},
+      #{creater,jdbcType=VARCHAR},
+      sysdate()
+    )
+  </insert>
+
+  <update id="update" parameterType="com.hh.improve.entity.PaymentHistory">
+    UPDATE hh_paymenthistory
+    <set >
+      <if test="customerId != null" >
+        customer_Id = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="payAmount != null" >
+        pay_Amount = #{payAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="payDate != null" >
+        pay_Date = #{payDate,jdbcType=VARCHAR},
+      </if>
+      <if test="payee != null" >
+        payee = #{payee,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      MODIFIED_TIME = sysdate()
+    </set>
+    <where >
+      ph_Id = #{phId, jdbcType=VARCHAR}
+    </where>
+  </update>
+
+  <select id="countPayHistoryByCustomerId" parameterType="java.lang.String" resultType="java.math.BigDecimal">
+    SELECT SUM(p.pay_Amount)
+    FROM hh_paymenthistory p
+    WHERE p.customer_Id = #{customerId, jdbcType = VARCHAR}
+  </select>
+</mapper>

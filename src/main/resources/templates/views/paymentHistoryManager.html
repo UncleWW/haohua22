@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorator="layouts/layout-paymentHistory">
+<head>
+  <title>HH-日记账</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  
+</head>
+<body>
+<div layout:fragment="content" style="">
+    <!-- 搜索框      开始 -->
+    <div class="panel panel-default">
+        <div class="panel-body">
+                <form id="formSearch"  class="form-horizontal" >
+                    <div class="col-sm-12 form-group"  >
+                        <label class="control-label col-sm-1" for="txt_search_customerName">客户名称</label>
+                        <div class="col-sm-2">
+                            <input type="text" class="form-control" id="txt_search_customerName" />
+                        </div>
+                        <label class="control-label col-sm-1" for="start_time">开始时间</label>
+                        <div class="col-sm-2 datetime">
+                            <div class="input-append date form_datetime" id="start_time" data-link-field="start_time" data-date="" data-date-format="yyyy-mm-dd" >
+                                <input type="text" class="form-control" size="16" id="search_start_time" name="startTime" value="">
+                                <span class="add-on"><i class="icon-remove"></i></span>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
+                        <label class="control-label col-sm-1" for="end_time">结束时间</label>
+                        <div class="col-sm-2 datetime">
+                            <div class="input-append date form_datetime" id="end_time" data-link-field="end_time" data-date="" data-date-format="yyyy-mm-dd" >
+                                <input type="text" class="form-control" size="16" id="search_end_time" name="endTime" value="">
+                                <span class="add-on"><i class="icon-remove"></i></span>
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="button" class="btn btn-primary"
+                                    id="payment-query-btn">查询</button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="button" class="btn btn-primary"
+                                    id="payment-add-btn">新增</button>
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+    <!-- 搜索框      结束 -->
+    <!-- 列表  Table    开始 -->
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <table id="tb_paymentHistory"></table>
+        </div>
+    </div>
+    <!-- 列表  Table    结束 -->
+    <!-- 弹出框  开始 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true"  data-backdrop="true" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">新增收款记录</h4>
+                </div>
+                <!-- 内容开始 -->
+                <div class="modal-body">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <form id="paymentForm" class="form-horizontal">
+                                <div class="col-sm-12 form-group-line">
+                                    <label class="control-label col-sm-3">客户名称：</label>
+                                    <div class="col-sm-8 rowGroup">
+                                        <input name="phId"  id="updatePhId" type="hidden" >
+                                        <select id="customerSelect" class="form-control" name="customerId">
+                                            <option value="" ></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <strong>*</strong>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 form-group-line">
+                                    <label class="control-label col-sm-3">收款金额(元)</label>
+                                    <div class="col-sm-8 rowGroup">
+                                        <input name="payAmount" class="form-control" id="payAmountId" type="text">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <strong>*</strong>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 form-group-line">
+                                    <label class="control-label col-sm-3">收款人</label>
+                                    <div class="col-sm-8 rowGroup">
+                                        <input name="payee" class="form-control" id="payeeId" type="text">
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <strong>*</strong>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 form-group-line ">
+                                    <label class="control-label col-sm-3" for="end_time">收款日期</label>
+                                    <div class="col-sm-8 datetime rowGroup"  >
+                                        <div class="input-append date" id="payDate" data-link-field="" data-date="" data-date-format="yyyy-mm-dd" >
+                                            <input type="text" class="form-control" size="16" id="payDateId" name="payDate" readonly="readonly">
+                                            <span class="add-on"><i class="icon-remove"></i></span>
+                                            <span class="add-on"><i class="icon-th"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-1">
+                                        <strong>*</strong>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 form-group-line">
+                                    <label class="control-label col-sm-3">备注：</label>
+                                    <div class="col-sm-8 rowGroup">
+                                        <input name="remark" id="remarkId" type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- 内容结束 -->
+                <div class="modal-footer">
+                    <button type="button" id="btn1" class="btn btn-default"
+                            data-dismiss="modal">取消</button>
+                    <button type="button" id="payment_saveBtn" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 弹出框  结束 -->
+</div>
+</body>
+</html>
