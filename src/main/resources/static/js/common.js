@@ -660,7 +660,7 @@ function selectAlert(title,button1,button2,Function1,Function2){
 	swal({
 		title: "",
 		text: title,
-        icon: 'warning',
+        icon: 'info',
         dangerMode:true,
         buttons:{
         	cancel:{
