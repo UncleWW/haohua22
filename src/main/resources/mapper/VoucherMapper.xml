@@ -5,8 +5,6 @@
     <result column="voucher_Id" property="voucherId" jdbcType="VARCHAR" />
     <result column="customer_Id" property="customerId" jdbcType="VARCHAR" />
     <result column="amount" property="amount" jdbcType="DECIMAL" />
-    <result column="pay_Amount" property="payAmount" jdbcType="DECIMAL" />
-    <result column="debt_Amount" property="debtAmount" jdbcType="DECIMAL" />
     <result column="voucher_Date" property="voucherDate" jdbcType="VARCHAR" />
     <result column="voucher_Maker" property="voucherMaker" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="VARCHAR" />
@@ -17,7 +15,7 @@
   </resultMap>
 
   <sql id="Base_Column_List" >
-    V.voucher_Id, V.customer_Id, V.amount, V.pay_Amount, V.debt_Amount,  V.voucher_Date, V.voucher_Maker,
+    V.voucher_Id, V.customer_Id, V.amount, V.voucher_Date, V.voucher_Maker,
     V.remark, V.creater, V.created_time, V.modifier, V.modified_time
   </sql>
 
@@ -50,8 +48,6 @@
     voucher_Id,
     customer_Id,
     amount,
-    pay_Amount,
-    debt_Amount,
     voucher_Date,
     voucher_Maker,
     remark,
@@ -61,8 +57,6 @@
     #{voucherId,jdbcType=VARCHAR},
     #{customerId,jdbcType=VARCHAR},
     #{amount,jdbcType=DECIMAL},
-    #{payAmount,jdbcType=DECIMAL},
-    #{debtAmount,jdbcType=DECIMAL},
     #{voucherDate,jdbcType=VARCHAR},
     #{voucherMaker,jdbcType=VARCHAR},
     #{remark,jdbcType=VARCHAR},
@@ -78,12 +72,6 @@
       </if>
       <if test="amount != null and amount !=''" >
         amount = #{amount,jdbcType=DECIMAL},
-      </if>
-      <if test="payAmount != null and payAmount !=''" >
-        pay_Amount = #{payAmount,jdbcType=DECIMAL},
-      </if>
-      <if test="debtAmount != null and debtAmount !=''" >
-        debt_Amount = #{debtAmount,jdbcType=DECIMAL},
       </if>
       <if test="voucherDate != null and voucherDate !=''" >
         voucher_Date = #{voucherDate,jdbcType=VARCHAR},
@@ -106,8 +94,7 @@
 
   <select id="queryVoucherListPage" resultType="com.hh.improve.entity.vo.VoucherVo">
     SELECT  V.customer_Id AS customerId,C.customer_Name AS customerName ,
-    SUM(V.amount) AS amount,SUM(V.pay_Amount) AS payAmount,
-    SUM(V.debt_Amount) AS debtAmount,COUNT(voucher_Id) AS voucherNnm
+    SUM(V.amount) AS amount, COUNT(voucher_Id) AS voucherNnm
     FROM hh_voucher V
     LEFT JOIN hh_customer C ON V.customer_Id = C.customer_Id
     <where>
@@ -120,20 +107,14 @@
       <if test="voucherDate_end != null and voucherDate_end !=''">
         <![CDATA[ AND V.voucher_Date <= #{voucherDate_end, jdbcType = TIMESTAMP} ]]>
       </if>
-      <if test='debtIf == "0"'>
-         AND  V.debt_Amount = 0
-      </if>
-      <if test='debtIf == "1"'>
-       AND V.debt_Amount >= 0
-      </if>
     </where>
     GROUP BY V.customer_Id
-    ORDER BY  amount DESC ,debtAmount DESC
+    ORDER BY  amount DESC
   </select>
 
   <select id="queryVoucherSonListPage" resultType="com.hh.improve.entity.vo.VoucherVo">
     SELECT  V.voucher_Id AS voucherId, V.customer_Id AS customerId, V.amount AS amount,
-    V.pay_Amount AS payAmount, V.debt_Amount AS debtAmount,  V.voucher_Date AS voucherDate,
+    V.voucher_Date AS voucherDate,
     V.voucher_Maker AS voucherMaker, V.remark AS remark,V.creater AS creater, V.created_time AS createdTime,
     V.modifier AS modifier, V.modified_time  AS modifiedTime,C.customer_Name AS customerName
     FROM hh_voucher V
@@ -154,13 +135,13 @@
       <if test="voucherDate_end != null and voucherDate_end !=''">
         <![CDATA[AND V.voucher_Date <= #{voucherDate_end, jdbcType = TIMESTAMP}]]>
       </if>
-      <if test='debtIf == "0"'>
-        AND  V.debt_Amount = 0
-      </if>
-      <if test='debtIf == "1"'>
-        AND V.debt_Amount >= 0
-      </if>
     </where>
     ORDER BY  V.voucher_Date DESC
+  </select>
+
+  <select id="countAmountByCustomerId"  parameterType="java.lang.String" resultType="java.math.BigDecimal">
+    SELECT SUM(V.amount) AS totalAmount
+    FROM hh_voucher V
+    WHERE V.customer_Id = #{customerId, jdbcType = VARCHAR}
   </select>
 </mapper>

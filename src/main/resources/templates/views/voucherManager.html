@@ -68,8 +68,8 @@
 					<th scope="col" >序号</th>
 					<th scope="col" >名称</th>
 					<th scope="col" >规格</th>
-					<th scope="col" >数量</th>
 					<th scope="col" >单位</th>
+					<th scope="col" >数量</th>
 					<th scope="col" >单价(元)</th>
 					<th scope="col">总价(元)</th>
 					<th scope="col">备注</th>
@@ -79,8 +79,8 @@
 						<input type="text" value="" onblur="changeValue(this)" readonly="readonly"/></td>
 					<td><input type="text" value="" onblur="changeValue(this)"/></td>
 					<td><input type="text" value="" onblur="changeValue(this)"/></td>
-					<td><input type="text" class="integerNum" value="" onblur="changeValue(this)"/></td>
 					<td><input type="text" value="" onblur="changeValue(this)"/></td>
+					<td><input type="text" class="integerNum" value="" onblur="changeValue(this)"/></td>
 					<td><input type="text" class="money" value="" onblur="changeValue(this)"/></td>
 					<td><input type="text" class="money" value="" onblur="changeValue(this)" readonly="readonly"/></td>
 					<td><div class="po-delete"><a href="javascript:;" class="chu vou_icon_hide"></a></div>
@@ -93,14 +93,15 @@
 					<td><input type="text" id="totalAmount" readonly="readonly"/></td>
 					<td><span class="voucherMaker">制单人：</span><input type="text" id="voucherMaker"/></td>
 				</tr>
-				<tr class="voucher_pay">
+				<!--<tr class="voucher_pay">
 					<td colspan="2"><span>收款：</span><input type="text" id="payMoney" class="money" value="" onblur="changePay(this)"/></td>
 					<td colspan="4"><input type="text" id="payChinese" class="Arabia_to_Chinese" readonly="readonly"/></td>
-                    <td colspan="2" rowspan="2" class="printP"><textarea id="remarkTextarea" placeholder="备注："></textarea></td>
-				</tr>
+                    <td colspan="2" rowspan="2"><textarea id="remarkTextarea" placeholder="备注："></textarea></td>
+				</tr>-->
 				<tr class="voucher_noPay">
-					<td colspan="2"><span>欠款：</span><input type="text" id="debtMoney" class="money" value="" readonly="readonly"></td>
+					<td colspan="2"><span>累计欠款：</span><input type="text" id="debtMoney" class="money" value="" readonly="readonly"></td>
 					<td colspan="4"><input type="text" id="debtChinese" class="Arabia_to_Chinese" readonly="readonly"/></td>
+					<td colspan="2"><input id="remarkTextarea" placeholder="备注：" style="text-align: left"/></td>
 				</tr>
 
 			</table>
