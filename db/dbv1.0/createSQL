@@ -230,7 +230,7 @@ create table hh_super_admin
   remark           VARCHAR(100),
   created_time    datetime DEFAULT null COMMENT '创建时间',
   modified_time   datetime DEFAULT null COMMENT '修改时间',
-  creater         VARCHAR(32) COMMENT '创建人',
+  creatHAR(32) COMMENT '创建人',
   modifier        VARCHAR(32) COMMENT '修改人'
 );
 alter table hh_super_admin add primary key (user_phone);

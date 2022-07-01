@@ -4,7 +4,6 @@ import com.github.pagehelper.PageHelper;
 import com.hh.improve.dao.IBaseDao;
 import com.hh.improve.dao.ICustomerDao;
 import com.hh.improve.entity.Customer;
-import com.hh.improve.entity.Employee;
 import com.hh.improve.service.ICustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
