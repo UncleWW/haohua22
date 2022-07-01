@@ -13,4 +13,5 @@ public interface ICustomerService extends IBaseService<Customer>{
 	 * @return
 	 */
 	List<Customer> getCustomerPageList(Customer cstomer, int offset, int limit);
+
 }

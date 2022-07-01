@@ -1,15 +1,15 @@
 $(document).ready(function() {
 	
-	$('.authManager').click(function() {
+	$('.voucherManager').click(function() {
 		window.location.href = $.contextPath() + "/voucher";
 		});
 
-	$('.baseInfo').click(function() {
+	$('.voucherListManager').click(function() {
 		window.location.href = $.contextPath() + "/voucherList";
 		});
 
-	$('.projManager').click(function() {
-		window.location.href = $.contextPath() + "/project";
+	$('.paymentHistoryManager').click(function() {
+		window.location.href = $.contextPath() + "/paymentHistory";
 		});
 
 	$('.moniManager').click(function() {
