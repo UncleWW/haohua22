@@ -53,6 +53,7 @@
               <img th:if="${#strings.equals('0', sex)}" th:src="@{/img/user0.png}" class="img-circle" alt="Avatar" />
               <img th:if="${#strings.equals('1', sex)}" th:src="@{/img/user1.png}" class="img-circle" alt="Avatar" />
               <span th:text="${userName}" style="color:#fff;">USER</span>
+              <span id="fragment_loginUserName" th:text="${userName}" th:hidden="true"></span>
             </a>
           </li>
           <li>
